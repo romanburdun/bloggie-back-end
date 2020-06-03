@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import java.time.LocalDateTime;
 
 @Entity
 @Setter
@@ -14,4 +15,6 @@ public class Post extends BaseEntity {
     private int readTime;
     private String cover;
     private String content;
+    private LocalDateTime publicationDate;
+    private String slug;
 }
