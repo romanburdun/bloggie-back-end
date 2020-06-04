@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 public class Post extends BaseEntity {
 
-    private LocalDateTime publicationDate;
+    private LocalDateTime datePublished;
     private String title;
     private String cover;
     private String content;

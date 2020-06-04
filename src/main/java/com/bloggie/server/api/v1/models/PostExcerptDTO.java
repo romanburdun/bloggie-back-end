@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class PostExcerptDTO {
     private LocalDateTime dateCreated;
     private LocalDateTime dateUpdated;
-    private LocalDateTime publicationDate;
+    private LocalDateTime datePublished;
     private String title;
     private String excerpt;
     private String slug;

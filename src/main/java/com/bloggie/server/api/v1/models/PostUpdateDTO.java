@@ -10,10 +10,10 @@ import java.time.LocalDateTime;
 
 public class PostUpdateDTO {
 
-    private String postTitle;
-    private int readTime;
+    private LocalDateTime datePublished;
     private String cover;
+    private String title;
     private String content;
-    private LocalDateTime publicationDate;
     private String slug;
+    private int readTime;
 }

@@ -24,8 +24,8 @@ public class PostsServiceImpl implements PostsService {
     @Override
     public PostDTO createPost(PostDTO postDTO) {
 
-        if(postDTO.getPublicationDate() == null) {
-            postDTO.setPublicationDate(LocalDateTime.now());
+        if(postDTO.getDatePublished() == null) {
+            postDTO.setDatePublished(LocalDateTime.now());
         }
 
         String slug = postDTO.getSlug().toLowerCase().replaceAll(" ", "-");
@@ -78,9 +78,9 @@ public class PostsServiceImpl implements PostsService {
         Post updatePost = foundPost.get();
 
 
-        if(update.getPostTitle() != "" && update.getPostTitle() != null
-                && !updatePost.getTitle().equals(update.getPostTitle())) {
-            updatePost.setTitle(update.getPostTitle());
+        if(update.getTitle() != "" && update.getTitle() != null
+                && !updatePost.getTitle().equals(update.getTitle())) {
+            updatePost.setTitle(update.getTitle());
         }
 
         if(update.getContent() != null && !updatePost.getContent().equals(update.getContent())) {
@@ -93,8 +93,8 @@ public class PostsServiceImpl implements PostsService {
             updatePost.setSlug(updatedSlug);
         }
 
-        if(update.getPublicationDate() != null && !update.getPublicationDate().equals(updatePost.getPublicationDate())) {
-                updatePost.setPublicationDate(update.getPublicationDate());
+        if(update.getDatePublished() != null && !update.getDatePublished().equals(updatePost.getDatePublished())) {
+                updatePost.setDatePublished(update.getDatePublished());
         }
 
         if(update.getCover() != null && !update.getCover().equals(updatePost.getCover())) {

@@ -80,7 +80,7 @@ class PostControllerTest extends AsJsonController {
     @Test
     void updatePost() throws Exception {
         PostUpdateDTO update = new PostUpdateDTO();
-        update.setPostTitle("Test post title updated");
+        update.setTitle("Test post title updated");
         update.setContent("Test post content updated");
         update.setCover("updatedTestCover.webp");
         update.setSlug("updated-test-post");

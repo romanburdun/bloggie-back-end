@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoSettings;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,7 +42,7 @@ class PostsServiceTest {
         post.setCover("testPost.webp");
         post.setReadTime(10);
         post.setSlug("test-post");
-        post.setPublicationDate(LocalDateTime.now());
+        post.setDatePublished(LocalDateTime.now());
 
         Mockito.when(postsRepository.save(any(Post.class))).thenReturn(TestFixtures.getSinglePost());
 
@@ -77,7 +76,7 @@ class PostsServiceTest {
     void updatePostBySlug() {
 
         PostUpdateDTO update = new PostUpdateDTO();
-        update.setPostTitle("Test post title updated");
+        update.setTitle("Test post title updated");
         update.setContent("Test post content updated");
         update.setSlug("test-post-updated");
 

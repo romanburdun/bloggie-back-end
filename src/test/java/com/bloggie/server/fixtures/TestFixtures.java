@@ -20,7 +20,7 @@ public abstract class TestFixtures {
         postOne.setCover("testPostOne.webp");
         postOne.setReadTime(10);
         postOne.setSlug("test-post-one");
-        postOne.setPublicationDate(LocalDateTime.now());
+        postOne.setDatePublished(LocalDateTime.now());
 
 
         Post postTwo = new Post();
@@ -32,7 +32,7 @@ public abstract class TestFixtures {
         postTwo.setCover("testPostTwo.webp");
         postTwo.setReadTime(25);
         postTwo.setSlug("test-post-two");
-        postTwo.setPublicationDate(LocalDateTime.now());
+        postTwo.setDatePublished(LocalDateTime.now());
 
         Post postThree = new Post();
         postThree.setId(3L);
@@ -57,7 +57,7 @@ public abstract class TestFixtures {
         postOne.setCover("testPostOne.webp");
         postOne.setReadTime(10);
         postOne.setSlug("test-post-one");
-        postOne.setPublicationDate(LocalDateTime.now());
+        postOne.setDatePublished(LocalDateTime.now());
 
 
         PostDTO postTwo = new PostDTO();
@@ -68,7 +68,7 @@ public abstract class TestFixtures {
         postTwo.setCover("testPostTwo.webp");
         postTwo.setReadTime(25);
         postTwo.setSlug("test-post-two");
-        postTwo.setPublicationDate(LocalDateTime.now());
+        postTwo.setDatePublished(LocalDateTime.now());
 
         PostDTO postThree = new PostDTO();
         postThree.setDateCreated( LocalDateTime.now());
@@ -92,7 +92,7 @@ public abstract class TestFixtures {
         post.setCover("testPost.webp");
         post.setReadTime(10);
         post.setSlug("test-post");
-        post.setPublicationDate(LocalDateTime.now());
+        post.setDatePublished(LocalDateTime.now());
 
         return post;
     }
@@ -106,7 +106,7 @@ public abstract class TestFixtures {
         post.setCover("testPost.webp");
         post.setReadTime(10);
         post.setSlug("test-post");
-        post.setPublicationDate(LocalDateTime.now());
+        post.setDatePublished(LocalDateTime.now());
 
         return post;
     }
@@ -121,7 +121,7 @@ public abstract class TestFixtures {
         post.setCover("testPost.webp");
         post.setReadTime(10);
         post.setSlug("test-post-updated");
-        post.setPublicationDate(LocalDateTime.now());
+        post.setDatePublished(LocalDateTime.now());
 
         return post;
     }
@@ -135,7 +135,7 @@ public abstract class TestFixtures {
         post.setCover("testPost.webp");
         post.setReadTime(10);
         post.setSlug("test-post-updated");
-        post.setPublicationDate(LocalDateTime.now());
+        post.setDatePublished(LocalDateTime.now());
 
         return post;
     }

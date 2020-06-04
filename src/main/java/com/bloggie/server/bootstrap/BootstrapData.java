@@ -20,7 +20,7 @@ public abstract class BootstrapData {
         postOne.setCover("postOne.webp");
         postOne.setReadTime(10);
         postOne.setSlug("post-one");
-        postOne.setPublicationDate(LocalDateTime.now());
+        postOne.setDatePublished(LocalDateTime.now());
 
 
         Post postTwo = new Post();
@@ -33,7 +33,7 @@ public abstract class BootstrapData {
         postTwo.setCover("postTwo.webp");
         postTwo.setReadTime(25);
         postTwo.setSlug("post-two");
-        postTwo.setPublicationDate(LocalDateTime.now());
+        postTwo.setDatePublished(LocalDateTime.now());
 
         Post postThree = new Post();
         postThree.setId(3L);
@@ -45,7 +45,7 @@ public abstract class BootstrapData {
         postThree.setCover("postThree.webp");
         postThree.setReadTime(5);
         postThree.setSlug("post-three");
-        postThree.setPublicationDate(LocalDateTime.now());
+        postThree.setDatePublished(LocalDateTime.now());
 
         return Arrays.asList(postOne, postTwo, postThree);
     }

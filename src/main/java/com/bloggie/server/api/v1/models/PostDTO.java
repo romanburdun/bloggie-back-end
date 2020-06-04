@@ -12,10 +12,10 @@ public class PostDTO {
 
     private LocalDateTime dateCreated;
     private LocalDateTime dateUpdated;
+    private LocalDateTime datePublished;
     private String title;
     private int readTime;
     private String cover;
     private String content;
-    private LocalDateTime publicationDate;
     private String slug;
 }
