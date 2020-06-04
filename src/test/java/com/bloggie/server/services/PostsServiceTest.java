@@ -92,4 +92,14 @@ class PostsServiceTest {
 
 
     }
+
+    @Test
+    void getPostBySlug() {
+
+        Mockito.when(postsRepository.findBySlug(any(String.class))).thenReturn(Optional.of(TestFixtures.getSinglePost()));
+        PostDTO fetchedPost = postsService.getPostBySlug("test-post");
+
+        assertNotNull(fetchedPost);
+        assertEquals("test-post", fetchedPost.getSlug());
+    }
 }
