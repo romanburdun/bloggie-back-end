@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+
 public class PostUpdateDTO {
 
     private String postTitle;

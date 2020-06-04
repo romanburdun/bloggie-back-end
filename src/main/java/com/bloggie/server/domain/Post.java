@@ -2,7 +2,6 @@ package com.bloggie.server.domain;
 
 import lombok.Getter;
 import lombok.Setter;
-
 import javax.persistence.Entity;
 import java.time.LocalDateTime;
 

@@ -8,6 +8,7 @@ import com.bloggie.server.repositories.PostsRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,6 +23,9 @@ public class PostsServiceImpl implements PostsService {
     @Override
     public PostDTO createPost(PostDTO postDTO) {
 
+        if(postDTO.getPublicationDate() == null) {
+            postDTO.setPublicationDate(LocalDateTime.now());
+        }
 
         String slug = postDTO.getSlug().toLowerCase().replaceAll(" ", "-");
         postDTO.setSlug(slug);
