@@ -14,6 +14,7 @@ public class Post extends BaseEntity {
     private int readTime;
     private String cover;
     private String content;
+    private String excerpt;
     private LocalDateTime publicationDate;
     private String slug;
 }

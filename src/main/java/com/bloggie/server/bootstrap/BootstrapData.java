@@ -16,6 +16,7 @@ public abstract class BootstrapData {
         postOne.setDateUpdated( LocalDateTime.now());
         postOne.setPostTitle("Post one title");
         postOne.setContent("Post one content");
+        postOne.setExcerpt("Post one excerpt");
         postOne.setCover("postOne.webp");
         postOne.setReadTime(10);
         postOne.setSlug("post-one");
@@ -28,6 +29,7 @@ public abstract class BootstrapData {
         postTwo.setDateUpdated( LocalDateTime.now());
         postTwo.setPostTitle("Post two title");
         postTwo.setContent("Post two content");
+        postTwo.setExcerpt("Post two excerpt");
         postTwo.setCover("postTwo.webp");
         postTwo.setReadTime(25);
         postTwo.setSlug("post-two");
@@ -39,6 +41,7 @@ public abstract class BootstrapData {
         postThree.setDateUpdated( LocalDateTime.now());
         postThree.setPostTitle("Post three title");
         postThree.setContent("Post three content");
+        postThree.setExcerpt("Post three excerpt");
         postThree.setCover("postThree.webp");
         postThree.setReadTime(5);
         postThree.setSlug("post-three");

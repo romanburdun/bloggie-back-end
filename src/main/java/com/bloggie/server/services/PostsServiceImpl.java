@@ -2,6 +2,7 @@ package com.bloggie.server.services;
 
 import com.bloggie.server.api.v1.mappers.PostMapper;
 import com.bloggie.server.api.v1.models.PostDTO;
+import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
 import com.bloggie.server.domain.Post;
 import com.bloggie.server.repositories.PostsRepository;
@@ -105,5 +106,14 @@ public class PostsServiceImpl implements PostsService {
         }
 
         return postMapper.postToPostDto(postsRepository.save(updatePost));
+    }
+
+    @Override
+    public List<PostExcerptDTO> getPostsExcerpts() {
+
+        return postsRepository.findAll()
+                .stream()
+                .map(post -> postMapper.postToPostExcerptDto(post))
+                .collect(Collectors.toList());
     }
 }

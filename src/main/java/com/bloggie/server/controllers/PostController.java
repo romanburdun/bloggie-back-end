@@ -1,6 +1,7 @@
 package com.bloggie.server.controllers;
 
 import com.bloggie.server.api.v1.models.PostDTO;
+import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
 import com.bloggie.server.services.PostsService;
 import lombok.AllArgsConstructor;
@@ -34,6 +35,11 @@ public class PostController {
     @PutMapping("/{slug}")
     private PostDTO updatePost(@PathVariable String slug, @RequestBody PostUpdateDTO updateDTO) {
         return postsService.updatePostBySlug(slug, updateDTO);
+    }
+
+    @GetMapping("/excerpts")
+    private List<PostExcerptDTO> getPostsExcerpts() {
+        return postsService.getPostsExcerpts();
     }
 
 
