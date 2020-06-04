@@ -38,7 +38,7 @@ class PostsServiceTest {
     void createPost() {
 
         Post post = new Post();
-        post.setPostTitle("Test post title");
+        post.setTitle("Test post title");
         post.setContent("Test post content");
         post.setCover("testPost.webp");
         post.setReadTime(10);

@@ -18,10 +18,9 @@ class PostMapperTest {
     void postDtoToPost() {
 
         PostDTO postDTO = new PostDTO();
-        postDTO.setId(1L);
         postDTO.setDateCreated( LocalDateTime.now());
         postDTO.setDateUpdated( LocalDateTime.now());
-        postDTO.setPostTitle("DTO test title");
+        postDTO.setTitle("DTO test title");
         postDTO.setContent("DTO test content");
         postDTO.setCover("testDto.webp");
         postDTO.setReadTime(5);
@@ -42,7 +41,7 @@ class PostMapperTest {
         post.setId(1L);
         post.setDateCreated( LocalDateTime.now());
         post.setDateUpdated( LocalDateTime.now());
-        post.setPostTitle("Test title");
+        post.setTitle("Test title");
         post.setContent("Test content");
         post.setCover("test.webp");
         post.setReadTime(10);

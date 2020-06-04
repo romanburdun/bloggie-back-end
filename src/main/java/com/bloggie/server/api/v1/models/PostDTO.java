@@ -10,10 +10,9 @@ import java.time.LocalDateTime;
 @Setter
 public class PostDTO {
 
-    private Long id;
     private LocalDateTime dateCreated;
     private LocalDateTime dateUpdated;
-    private String postTitle;
+    private String title;
     private int readTime;
     private String cover;
     private String content;

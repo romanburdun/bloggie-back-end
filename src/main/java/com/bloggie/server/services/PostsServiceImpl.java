@@ -79,8 +79,8 @@ public class PostsServiceImpl implements PostsService {
 
 
         if(update.getPostTitle() != "" && update.getPostTitle() != null
-                && !updatePost.getPostTitle().equals(update.getPostTitle())) {
-            updatePost.setPostTitle(update.getPostTitle());
+                && !updatePost.getTitle().equals(update.getPostTitle())) {
+            updatePost.setTitle(update.getPostTitle());
         }
 
         if(update.getContent() != null && !updatePost.getContent().equals(update.getContent())) {

@@ -38,7 +38,7 @@ class PostControllerTest extends AsJsonController {
     void createPostTest() throws Exception {
 
         PostDTO post = new PostDTO();
-        post.setPostTitle("Test post title");
+        post.setTitle("Test post title");
         post.setContent("Test post content");
         post.setCover("testPost.webp");
         post.setReadTime(10);
