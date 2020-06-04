@@ -13,11 +13,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -95,6 +90,16 @@ class PostControllerTest extends AsJsonController {
 
          mockMvc.perform(put("/api/v1/posts/test-post").contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(update)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+    }
+
+    @Test
+    void getPostBySluTest() throws Exception {
+        Mockito.when(postsService.getPostBySlug("test-post")).thenReturn(TestFixtures.getSinglePostDTO());
+
+        mockMvc.perform(get("/api/v1/posts/test-post"))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
