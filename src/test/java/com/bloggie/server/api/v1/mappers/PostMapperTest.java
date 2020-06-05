@@ -1,6 +1,7 @@
 package com.bloggie.server.api.v1.mappers;
 
 import com.bloggie.server.api.v1.models.PostDTO;
+import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.domain.Post;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,6 +52,26 @@ class PostMapperTest {
         assertNotNull(postDTO);
         assertEquals("Test content", postDTO.getContent());
         assertEquals("test.webp", postDTO.getCover());
+
+    }
+
+    @Test
+    void postToPostExcerptDto() {
+        Post post = new Post();
+        post.setId(1L);
+        post.setDateCreated( LocalDateTime.now());
+        post.setDateUpdated( LocalDateTime.now());
+        post.setTitle("Test title");
+        post.setContent("Test content");
+        post.setCover("test.webp");
+        post.setReadTime(10);
+
+        PostExcerptDTO postExcerptDTO = postMapper.postToPostExcerptDto(post);
+
+        assertNotNull(postExcerptDTO);
+        assertEquals("Test title", postExcerptDTO.getTitle());
+        assertEquals("test.webp", postExcerptDTO.getCover());
+        assertEquals(10, postExcerptDTO.getReadTime());
 
     }
 }

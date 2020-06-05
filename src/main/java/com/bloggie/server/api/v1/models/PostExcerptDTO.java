@@ -11,6 +11,7 @@ public class PostExcerptDTO {
     private LocalDateTime dateCreated;
     private LocalDateTime dateUpdated;
     private LocalDateTime datePublished;
+    private String cover;
     private String title;
     private String excerpt;
     private String slug;
