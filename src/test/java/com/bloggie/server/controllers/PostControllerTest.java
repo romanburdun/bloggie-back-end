@@ -104,4 +104,14 @@ class PostControllerTest extends AsJsonController {
                 .andReturn().getResponse().getContentAsString();
 
     }
+
+    @Test
+    void getPostsExcerpts() throws Exception {
+        Mockito.when(postsService.getPostsExcerpts()).thenReturn(TestFixtures.getPostsExcerptsDTOs());
+
+        mockMvc.perform(get("/api/v1/posts/excerpt"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+    }
 }

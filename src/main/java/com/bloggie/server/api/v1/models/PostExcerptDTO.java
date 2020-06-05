@@ -14,6 +14,6 @@ public class PostExcerptDTO {
     private String title;
     private String excerpt;
     private String slug;
-    private String readTime;
+    private int readTime;
 
 }

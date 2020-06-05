@@ -1,6 +1,7 @@
 package com.bloggie.server.fixtures;
 
 import com.bloggie.server.api.v1.models.PostDTO;
+import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.domain.Post;
 
 import java.time.LocalDateTime;
@@ -82,6 +83,35 @@ public abstract class TestFixtures {
         return Arrays.asList(postOne, postTwo, postThree);
     }
 
+
+    public static List<PostExcerptDTO> getPostsExcerptsDTOs() {
+
+        PostExcerptDTO postTwoExcerpt = new PostExcerptDTO();
+        postTwoExcerpt.setDateCreated( LocalDateTime.now());
+        postTwoExcerpt.setDateUpdated( LocalDateTime.now());
+        postTwoExcerpt.setTitle("Test post one title");
+        postTwoExcerpt.setReadTime(10);
+        postTwoExcerpt.setSlug("test-post-one");
+        postTwoExcerpt.setDatePublished(LocalDateTime.now());
+
+
+        PostExcerptDTO postTwoExcerptDTO = new PostExcerptDTO();
+        postTwoExcerptDTO.setDateCreated( LocalDateTime.now());
+        postTwoExcerptDTO.setDateUpdated( LocalDateTime.now());
+        postTwoExcerptDTO.setTitle("Test post two title");
+        postTwoExcerptDTO.setReadTime(25);
+        postTwoExcerptDTO.setSlug("test-post-two");
+        postTwoExcerptDTO.setDatePublished(LocalDateTime.now());
+
+        PostExcerptDTO postThreeExcerpt = new PostExcerptDTO();
+        postThreeExcerpt.setDateCreated( LocalDateTime.now());
+        postThreeExcerpt.setDateUpdated( LocalDateTime.now());
+        postThreeExcerpt.setTitle("Test post three title");
+        postThreeExcerpt.setReadTime(5);
+        postThreeExcerpt.setSlug("post-three");
+
+        return Arrays.asList(postTwoExcerpt, postTwoExcerptDTO, postThreeExcerpt);
+    }
     public static Post getSinglePost() {
         Post post = new Post();
         post.setId(1L);
