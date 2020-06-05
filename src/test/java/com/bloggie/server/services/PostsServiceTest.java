@@ -2,6 +2,7 @@ package com.bloggie.server.services;
 
 import com.bloggie.server.api.v1.mappers.PostMapper;
 import com.bloggie.server.api.v1.models.PostDTO;
+import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
 import com.bloggie.server.domain.Post;
 import com.bloggie.server.fixtures.TestFixtures;
@@ -100,5 +101,16 @@ class PostsServiceTest {
 
         assertNotNull(fetchedPost);
         assertEquals("test-post", fetchedPost.getSlug());
+    }
+
+    @Test
+    void getPostsExcerpts() {
+
+        Mockito.when(postsRepository.findAll()).thenReturn(TestFixtures.getPosts());
+
+        List<PostExcerptDTO> fetchedExcerpts = postsService.getPostsExcerpts();
+
+        assertNotNull(fetchedExcerpts);
+        assertEquals(3, fetchedExcerpts.size());
     }
 }
