@@ -8,11 +8,14 @@ import com.bloggie.server.domain.Post;
 import com.bloggie.server.repositories.PostsRepository;
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
+
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +27,8 @@ public class PostsServiceImpl implements PostsService {
 
     private final PostsRepository postsRepository;
     private final PostMapper postMapper;
+
+    private final String COVERS_PATH = "images/covers";
 
     @Override
     public PostDTO createPost(PostDTO postDTO) {
@@ -38,7 +43,7 @@ public class PostsServiceImpl implements PostsService {
         postDTO.setSlug(slug);
 
         if(postDTO.getCover().startsWith("data:")) {
-            postDTO.setCover(saveImage(postDTO.getCover(), slug, "images/covers"));
+            postDTO.setCover(saveImage(postDTO.getCover(), slug, COVERS_PATH));
         } else {
             postDTO.setCover("");
         }
@@ -129,6 +134,26 @@ public class PostsServiceImpl implements PostsService {
                 .stream()
                 .map(post -> postMapper.postToPostExcerptDto(post))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Resource getPostCover(String slug) {
+
+        Optional<Post> post = postsRepository.findBySlug(slug);
+        UrlResource resource= null;
+        if(post.isPresent()) {
+            Path filePath = Path.of(COVERS_PATH + "/" + post.get().getCover());
+
+            try {
+                resource = new UrlResource(filePath.toUri());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+
+        return resource;
     }
 
 

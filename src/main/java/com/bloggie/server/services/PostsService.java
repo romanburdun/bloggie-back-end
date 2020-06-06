@@ -4,7 +4,7 @@ import com.bloggie.server.api.v1.models.PostDTO;
 import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
 
-
+import org.springframework.core.io.Resource;
 
 import java.util.List;
 
@@ -15,4 +15,5 @@ public interface PostsService {
     PostDTO deletePostBySlug(String slug);
     PostDTO updatePostBySlug(String slug, PostUpdateDTO update);
     List<PostExcerptDTO> getPostsExcerpts();
+    Resource getPostCover(String fileName);
 }

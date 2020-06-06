@@ -6,6 +6,8 @@ import com.bloggie.server.api.v1.models.PostUpdateDTO;
 import com.bloggie.server.services.PostsService;
 import lombok.AllArgsConstructor;
 
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,5 +48,10 @@ public class PostController {
     @DeleteMapping("/{slug}")
     private PostDTO deletePost(@PathVariable String slug) {
         return postsService.deletePostBySlug(slug);
+    }
+
+    @GetMapping(value= "/covers/{slug}",produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    private Resource getPostCover(@PathVariable String slug) {
+        return postsService.getPostCover(slug);
     }
 }
