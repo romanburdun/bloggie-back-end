@@ -7,8 +7,12 @@ import com.bloggie.server.api.v1.models.PostUpdateDTO;
 import com.bloggie.server.domain.Post;
 import com.bloggie.server.repositories.PostsRepository;
 import lombok.AllArgsConstructor;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Service;
 
+import java.io.*;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -28,8 +32,18 @@ public class PostsServiceImpl implements PostsService {
             postDTO.setDatePublished(LocalDateTime.now());
         }
 
+
+
         String slug = postDTO.getSlug().toLowerCase().replaceAll(" ", "-");
         postDTO.setSlug(slug);
+
+        if(postDTO.getCover().startsWith("data:")) {
+            postDTO.setCover(saveImage(postDTO.getCover(), slug, "images/covers"));
+        } else {
+            postDTO.setCover("");
+        }
+
+
 
         Post createdPost = postsRepository.save(postMapper.postDtoToPost(postDTO));
 
@@ -115,5 +129,39 @@ public class PostsServiceImpl implements PostsService {
                 .stream()
                 .map(post -> postMapper.postToPostExcerptDto(post))
                 .collect(Collectors.toList());
+    }
+
+
+    /// Helper methods
+
+    public String saveImage(String imageString, String fileName, String path) {
+        String base64Image = imageString.split(",")[1];
+
+        // Extracting extension from base64 string
+        // First split gets data:[mime-type]
+        // Second split gets extension
+        String extension = imageString.split(";")[0].split("/")[1];
+
+        String file = "";
+        File directory = new File(path);
+
+        if(!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        byte[] imageBytes = Base64.decodeBase64(base64Image);
+
+
+        try {
+
+           file = fileName + "." + extension;
+
+            FileOutputStream fstream = new FileOutputStream(new File(path + "/" + file));
+            fstream.write(imageBytes);
+            fstream.close();
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+        return file;
     }
 }
