@@ -5,12 +5,14 @@ import com.bloggie.server.api.v1.models.PostDTO;
 import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
 import com.bloggie.server.domain.Post;
+import com.bloggie.server.exceptions.ApiRequestException;
 import com.bloggie.server.repositories.PostsRepository;
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -33,14 +35,30 @@ public class PostsServiceImpl implements PostsService {
     @Override
     public PostDTO createPost(PostDTO postDTO) {
 
+
+        if(postDTO.getTitle() == null || postDTO.getContent() == null ) {
+            throw new ApiRequestException("Bad request", HttpStatus.BAD_REQUEST);
+        }
+
+        if(postDTO.getTitle() == "" || postDTO.getContent() == "") {
+            throw new ApiRequestException("Bad request", HttpStatus.BAD_REQUEST);
+        }
+
         if(postDTO.getDatePublished() == null) {
             postDTO.setDatePublished(LocalDateTime.now());
         }
 
 
+        String slug;
+        if (postDTO.getSlug() == null || postDTO.getSlug() == "") {
 
-        String slug = postDTO.getSlug().toLowerCase().replaceAll(" ", "-");
+            slug = postDTO.getTitle().toLowerCase().replaceAll(" ", "-");
+        } else {
+            slug = postDTO.getSlug().toLowerCase().replaceAll(" ", "-");
+        }
+
         postDTO.setSlug(slug);
+
 
         if(postDTO.getCover().startsWith("data:")) {
             postDTO.setCover(saveImage(postDTO.getCover(), slug, COVERS_PATH));
@@ -66,7 +84,14 @@ public class PostsServiceImpl implements PostsService {
 
     @Override
     public PostDTO getPostBySlug(String slug) {
-        return postMapper.postToPostDto(postsRepository.findBySlug(slug).get());
+
+        Optional<Post> post = postsRepository.findBySlug(slug);
+
+        if(!post.isPresent()) {
+            throw new ApiRequestException("Post not found", HttpStatus.NOT_FOUND);
+        }
+
+        return postMapper.postToPostDto(post.get());
     }
 
     @Override
@@ -74,15 +99,18 @@ public class PostsServiceImpl implements PostsService {
 
         Optional<Post> post =  postsRepository.findBySlug(slug);
 
-        PostDTO postDTO = null;
-        if(post.isPresent()) {
-            postDTO = postMapper.postToPostDto(post.get());
-            postsRepository.deleteById(post.get().getId());
-        } else {
-            System.out.println("Throwing 404 error");
+        if(!post.isPresent()) {
+            throw new ApiRequestException("Post not found", HttpStatus.NOT_FOUND);
         }
 
-        return postDTO;
+        File deleteCover = new File(COVERS_PATH + "/" + post.get().getCover());
+
+        if(deleteCover.exists()) {
+            deleteCover.delete();
+        }
+        postsRepository.deleteById(post.get().getId());
+
+        return postMapper.postToPostDto(post.get());
     }
 
     @Override
@@ -91,7 +119,7 @@ public class PostsServiceImpl implements PostsService {
         Optional<Post> foundPost = postsRepository.findBySlug(slug);
 
         if(!foundPost.isPresent()) {
-            return null;
+            throw new ApiRequestException("Post not found", HttpStatus.NOT_FOUND);
         }
 
         Post updatePost = foundPost.get();
@@ -141,16 +169,17 @@ public class PostsServiceImpl implements PostsService {
 
         Optional<Post> post = postsRepository.findBySlug(slug);
         UrlResource resource= null;
-        if(post.isPresent()) {
-            Path filePath = Path.of(COVERS_PATH + "/" + post.get().getCover());
-
-            try {
-                resource = new UrlResource(filePath.toUri());
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
+        if(!post.isPresent()) {
+            throw new ApiRequestException("Post not found", HttpStatus.NOT_FOUND);
         }
 
+        Path filePath = Path.of(COVERS_PATH + "/" + post.get().getCover());
+
+        try {
+            resource = new UrlResource(filePath.toUri());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
 
 
         return resource;
