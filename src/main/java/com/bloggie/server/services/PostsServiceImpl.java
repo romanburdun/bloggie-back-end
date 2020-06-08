@@ -6,12 +6,16 @@ import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
 import com.bloggie.server.domain.Post;
 import com.bloggie.server.exceptions.ApiRequestException;
+import com.bloggie.server.misc.PostsExcerptsPaged;
+import com.bloggie.server.misc.PostsPaged;
 import com.bloggie.server.repositories.PostsRepository;
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -75,11 +79,20 @@ public class PostsServiceImpl implements PostsService {
     }
 
     @Override
-    public List<PostDTO> getPosts() {
-        return postsRepository.findAll()
-                                .stream()
-                                .map(post -> postMapper.postToPostDto(post))
-                                .collect(Collectors.toList());
+    public PostsPaged getPosts(int page, int posts) {
+
+        if(page > 0) {
+            page--;
+        }
+
+        PageRequest pageRequest = PageRequest.of(page, posts, Sort.Direction.DESC, "dateCreated");
+
+        List<PostDTO> postsList = postsRepository.findAll(pageRequest)
+                .stream()
+                .map(post -> postMapper.postToPostDto(post))
+                .collect(Collectors.toList());
+
+        return new PostsPaged(getTotalPages(posts), postsList);
     }
 
     @Override
@@ -156,12 +169,20 @@ public class PostsServiceImpl implements PostsService {
     }
 
     @Override
-    public List<PostExcerptDTO> getPostsExcerpts() {
+    public PostsExcerptsPaged getPostsExcerpts(int page, int posts) {
 
-        return postsRepository.findAll()
+        if(page > 0) {
+            page--;
+        }
+
+        PageRequest pageRequest = PageRequest.of(page, posts, Sort.Direction.DESC, "dateCreated");
+
+        List<PostExcerptDTO> postsList = postsRepository.findAll(pageRequest)
                 .stream()
                 .map(post -> postMapper.postToPostExcerptDto(post))
                 .collect(Collectors.toList());
+
+        return new PostsExcerptsPaged(getTotalPages(posts), postsList);
     }
 
     @Override
@@ -217,5 +238,10 @@ public class PostsServiceImpl implements PostsService {
             System.out.println(ex);
         }
         return file;
+    }
+
+    public int getTotalPages(int posts) {
+        return (int) Math.ceil((double) postsRepository.count() / posts);
+
     }
 }

@@ -3,6 +3,8 @@ package com.bloggie.server.controllers;
 import com.bloggie.server.api.v1.models.PostDTO;
 import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
+import com.bloggie.server.misc.PostsExcerptsPaged;
+import com.bloggie.server.misc.PostsPaged;
 import com.bloggie.server.services.PostsService;
 import lombok.AllArgsConstructor;
 
@@ -25,8 +27,8 @@ public class PostController {
     }
 
     @GetMapping
-    private List<PostDTO> getPosts() {
-        return postsService.getPosts();
+    private PostsPaged getPosts(@RequestParam int page, @RequestParam int posts) {
+        return postsService.getPosts(page, posts);
     }
 
     @GetMapping("/{slug}")
@@ -40,8 +42,8 @@ public class PostController {
     }
 
     @GetMapping("/excerpts")
-    private List<PostExcerptDTO> getPostsExcerpts() {
-        return postsService.getPostsExcerpts();
+    private PostsExcerptsPaged getPostsExcerpts(@RequestParam int page, @RequestParam int posts) {
+        return postsService.getPostsExcerpts(page, posts);
     }
 
 

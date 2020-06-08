@@ -6,12 +6,18 @@ import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
 import com.bloggie.server.domain.Post;
 import com.bloggie.server.fixtures.TestFixtures;
+import com.bloggie.server.misc.PostsExcerptsPaged;
+import com.bloggie.server.misc.PostsPaged;
 import com.bloggie.server.repositories.PostsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -57,10 +63,15 @@ class PostsServiceTest {
     @Test
     void getPosts() {
 
-        Mockito.when(postsRepository.findAll()).thenReturn(TestFixtures.getPosts());
-        List<PostDTO> posts = postsService.getPosts();
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.Direction.DESC, "dateCreated");
+        Page<Post> pagedPosts = new PageImpl(TestFixtures.getPosts());
+
+        Mockito.when(postsRepository.findAll(pageRequest)).thenReturn(pagedPosts);
+
+        PostsPaged posts = postsService.getPosts(1, 3);
+
         assertNotNull(posts);
-        assertEquals(3, posts.size());
+        assertEquals(3, posts.getPosts().size());
 
     }
 
@@ -106,11 +117,14 @@ class PostsServiceTest {
     @Test
     void getPostsExcerpts() {
 
-        Mockito.when(postsRepository.findAll()).thenReturn(TestFixtures.getPosts());
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.Direction.DESC, "dateCreated");
+        Page<Post> pagedPosts = new PageImpl(TestFixtures.getPosts());
 
-        List<PostExcerptDTO> fetchedExcerpts = postsService.getPostsExcerpts();
+        Mockito.when(postsRepository.findAll(pageRequest)).thenReturn(pagedPosts);
+
+        PostsExcerptsPaged fetchedExcerpts = postsService.getPostsExcerpts(0, 3);
 
         assertNotNull(fetchedExcerpts);
-        assertEquals(3, fetchedExcerpts.size());
+        assertEquals(3, fetchedExcerpts.getPostsExcerpts().size());
     }
 }

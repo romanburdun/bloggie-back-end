@@ -3,6 +3,8 @@ package com.bloggie.server.controllers;
 import com.bloggie.server.api.v1.models.PostDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
 import com.bloggie.server.fixtures.TestFixtures;
+import com.bloggie.server.misc.PostsExcerptsPaged;
+import com.bloggie.server.misc.PostsPaged;
 import com.bloggie.server.services.PostsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,9 +63,11 @@ class PostControllerTest extends AsJsonController {
 
     @Test
     void getPosts() throws Exception {
-        Mockito.when(postsService.getPosts()).thenReturn(TestFixtures.getPostsDTOs());
 
-        mockMvc.perform(get("/api/v1/posts"))
+        PostsPaged response = new PostsPaged(1,TestFixtures.getPostsDTOs());
+        Mockito.when(postsService.getPosts(0, 3)).thenReturn(response);
+
+        mockMvc.perform(get("/api/v1/posts?page=1&posts=3"))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
     }
@@ -96,9 +100,8 @@ class PostControllerTest extends AsJsonController {
     }
 
     @Test
-    void getPostBySluTest() throws Exception {
+    void getPostBySlugTest() throws Exception {
         Mockito.when(postsService.getPostBySlug("test-post")).thenReturn(TestFixtures.getSinglePostDTO());
-
         mockMvc.perform(get("/api/v1/posts/test-post"))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
@@ -107,9 +110,10 @@ class PostControllerTest extends AsJsonController {
 
     @Test
     void getPostsExcerpts() throws Exception {
-        Mockito.when(postsService.getPostsExcerpts()).thenReturn(TestFixtures.getPostsExcerptsDTOs());
+        PostsExcerptsPaged response = new PostsExcerptsPaged(1, TestFixtures.getPostsExcerptsDTOs());
+        Mockito.when(postsService.getPostsExcerpts(0, 3)).thenReturn(response);
 
-        mockMvc.perform(get("/api/v1/posts/excerpt"))
+        mockMvc.perform(get("/api/v1/posts/excerpt?page=0&posts=3"))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
