@@ -1,5 +1,6 @@
 package com.bloggie.server.bootstrap;
 
+import com.bloggie.server.domain.Page;
 import com.bloggie.server.domain.Post;
 
 import java.time.LocalDateTime;
@@ -48,5 +49,20 @@ public abstract class BootstrapData {
         postThree.setDatePublished(LocalDateTime.now());
 
         return Arrays.asList(postOne, postTwo, postThree);
+    }
+
+    public static List<Page> getPages() {
+        Page blogPage = new Page();
+        blogPage.setTitle("Blog page");
+        blogPage.setContent("<div>Blog page content here...</div>");
+        blogPage.setSlug("blog");
+
+        Page aboutPage = new Page();
+        aboutPage.setTitle("About page");
+        aboutPage.setContent("<div>About page content here...</div>");
+        aboutPage.setSlug("about");
+
+        return Arrays.asList(blogPage, aboutPage);
+
     }
 }
