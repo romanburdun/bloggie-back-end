@@ -2,6 +2,7 @@ package com.bloggie.server.services;
 
 import com.bloggie.server.api.v1.mappers.PageMapper;
 import com.bloggie.server.api.v1.models.PageDTO;
+import com.bloggie.server.api.v1.models.PageUpdateDTO;
 import com.bloggie.server.domain.Page;
 import com.bloggie.server.exceptions.ApiRequestException;
 import com.bloggie.server.repositories.PagesRepository;
@@ -62,7 +63,7 @@ public class PageServiceImpl implements PageService {
     }
 
     @Override
-    public PageDTO updatePageBySlug(String slug, PageDTO updateDTO) {
+    public PageDTO updatePageBySlug(String slug, PageUpdateDTO updateDTO) {
         Optional<Page> foundPage = pagesRepository.findBySlug(slug);
 
         if(!foundPage.isPresent()) {
