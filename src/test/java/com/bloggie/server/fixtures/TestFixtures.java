@@ -1,7 +1,9 @@
 package com.bloggie.server.fixtures;
 
+import com.bloggie.server.api.v1.models.PageDTO;
 import com.bloggie.server.api.v1.models.PostDTO;
 import com.bloggie.server.api.v1.models.PostExcerptDTO;
+import com.bloggie.server.domain.Page;
 import com.bloggie.server.domain.Post;
 
 import java.time.LocalDateTime;
@@ -168,5 +170,36 @@ public abstract class TestFixtures {
         post.setDatePublished(LocalDateTime.now());
 
         return post;
+    }
+
+    public static Page getSinglePage() {
+        Page page = new Page();
+        page.setTitle("Test page");
+        page.setContent("<div>Test page content</div>");
+        page.setSlug("test-page");
+
+        return page;
+    }
+
+    public static Page getUpdatedPage() {
+        Page page = new Page();
+        page.setTitle("Test page updated");
+        page.setContent("<div>Test page content updated</div>");
+        page.setSlug("test-page");
+
+        return page;
+    }
+
+    public static List<Page> getPages() {
+        Page blogPage = new Page();
+        blogPage.setTitle("Blog page");
+        blogPage.setContent("<div>Blog page content here...</div>");
+        blogPage.setSlug("blog");
+
+        Page aboutPage = new Page();
+        aboutPage.setTitle("About page");
+        aboutPage.setContent("<div>About page content here...</div>");
+        aboutPage.setSlug("about");
+        return Arrays.asList(blogPage, aboutPage);
     }
 }
