@@ -12,8 +12,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
+@CrossOrigin
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1/posts")
