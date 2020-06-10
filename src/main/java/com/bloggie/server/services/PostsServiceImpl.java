@@ -4,6 +4,7 @@ import com.bloggie.server.api.v1.mappers.PostMapper;
 import com.bloggie.server.api.v1.models.PostDTO;
 import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
+import com.bloggie.server.domain.Page;
 import com.bloggie.server.domain.Post;
 import com.bloggie.server.exceptions.ApiRequestException;
 import com.bloggie.server.misc.PostsExcerptsPaged;
@@ -40,6 +41,7 @@ public class PostsServiceImpl implements PostsService {
     public PostDTO createPost(PostDTO postDTO) {
 
 
+        System.out.println(postDTO.getDatePublished());
         if(postDTO.getTitle() == null || postDTO.getContent() == null ) {
             throw new ApiRequestException("Bad request", HttpStatus.BAD_REQUEST);
         }
@@ -175,9 +177,13 @@ public class PostsServiceImpl implements PostsService {
             page--;
         }
 
-        PageRequest pageRequest = PageRequest.of(page, posts, Sort.Direction.DESC, "dateCreated");
 
-        List<PostExcerptDTO> postsList = postsRepository.findAll(pageRequest)
+        PageRequest pageRequest = PageRequest.of(page, posts, Sort.Direction.DESC, "datePublished");
+
+        LocalDateTime today = LocalDateTime.now();
+
+
+        List<PostExcerptDTO> postsList = postsRepository.findAllByDatePublishedBefore(today, pageRequest)
                 .stream()
                 .map(post -> postMapper.postToPostExcerptDto(post))
                 .collect(Collectors.toList());

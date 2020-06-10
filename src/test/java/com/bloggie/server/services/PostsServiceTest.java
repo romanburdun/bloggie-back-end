@@ -14,10 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -117,10 +114,11 @@ class PostsServiceTest {
     @Test
     void getPostsExcerpts() {
 
-        PageRequest pageRequest = PageRequest.of(0, 3, Sort.Direction.DESC, "dateCreated");
+        Pageable pageRequest = PageRequest.of(0, 3, Sort.Direction.DESC, "dateCreated");
         Page<Post> pagedPosts = new PageImpl(TestFixtures.getPosts());
 
-        Mockito.when(postsRepository.findAll(pageRequest)).thenReturn(pagedPosts);
+        Mockito.when(postsRepository.findAllByDatePublishedBefore(any(LocalDateTime.class),any(Pageable.class))).thenReturn(pagedPosts);
+
 
         PostsExcerptsPaged fetchedExcerpts = postsService.getPostsExcerpts(0, 3);
 
