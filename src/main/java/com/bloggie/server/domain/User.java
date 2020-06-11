@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
@@ -14,15 +15,15 @@ import java.util.Set;
 @NoArgsConstructor
 public class User extends BaseEntity {
 
-    @NonNull
     @NotEmpty
+    @NotNull
     private String name;
     @Column(unique = true)
-    @Email
-    @NonNull
     @NotEmpty
+    @NotNull
+    @Email
     private String email;
-    @NonNull
+    @NotNull
     @NotEmpty
     private String password;
     @ManyToMany(fetch = FetchType.EAGER)

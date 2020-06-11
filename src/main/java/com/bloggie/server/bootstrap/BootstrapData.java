@@ -2,6 +2,8 @@ package com.bloggie.server.bootstrap;
 
 import com.bloggie.server.domain.Page;
 import com.bloggie.server.domain.Post;
+import com.bloggie.server.domain.Role;
+import com.bloggie.server.domain.RoleName;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -64,5 +66,14 @@ public abstract class BootstrapData {
 
         return Arrays.asList(blogPage, aboutPage);
 
+    }
+
+    public static List<Role> getRoles() {
+        Role roleOne = new Role();
+        roleOne.setName(RoleName.ROLE_ADMINISTRATOR);
+
+        Role roleTwo = new Role();
+        roleTwo.setName(RoleName.ROLE_WRITER);
+        return Arrays.asList(roleOne, roleTwo);
     }
 }

@@ -186,6 +186,8 @@ public class PostsServiceImpl implements PostsService {
                 .map(post -> postMapper.postToPostExcerptDto(post))
                 .collect(Collectors.toList());
 
+
+
         return new PostsExcerptsPaged(getTotalPages(posts), postsList);
     }
 
