@@ -12,6 +12,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin
 @RestController
 @AllArgsConstructor
@@ -43,6 +45,16 @@ public class PostController {
     @GetMapping("/excerpts")
     private PostsExcerptsPaged getPostsExcerpts(@RequestParam int page, @RequestParam int posts) {
         return postsService.getPostsExcerpts(page, posts);
+    }
+
+    @GetMapping("/by-title")
+    private List<PostExcerptDTO> searchPostsByTitle(@RequestParam String title) {
+        return postsService.searchPostsByTitle(title);
+    }
+
+    @GetMapping("/by-content")
+    private List<PostExcerptDTO> searchPostsByContent(@RequestParam String content) {
+        return postsService.searchPostsByContent(content);
     }
 
 

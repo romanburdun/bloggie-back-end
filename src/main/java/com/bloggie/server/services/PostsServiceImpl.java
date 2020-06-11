@@ -4,7 +4,6 @@ import com.bloggie.server.api.v1.mappers.PostMapper;
 import com.bloggie.server.api.v1.models.PostDTO;
 import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
-import com.bloggie.server.domain.Page;
 import com.bloggie.server.domain.Post;
 import com.bloggie.server.exceptions.ApiRequestException;
 import com.bloggie.server.misc.PostsExcerptsPaged;
@@ -24,6 +23,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,8 +40,6 @@ public class PostsServiceImpl implements PostsService {
     @Override
     public PostDTO createPost(PostDTO postDTO) {
 
-
-        System.out.println(postDTO.getDatePublished());
         if(postDTO.getTitle() == null || postDTO.getContent() == null ) {
             throw new ApiRequestException("Bad request", HttpStatus.BAD_REQUEST);
         }
@@ -210,6 +208,54 @@ public class PostsServiceImpl implements PostsService {
 
 
         return resource;
+    }
+
+    @Override
+    public List<PostExcerptDTO> searchPostsByTitle(String searchTitle) {
+
+
+        LocalDateTime now = LocalDateTime.now();
+
+        List<PostExcerptDTO> foundPosts = postsRepository.findAllByTitleIgnoreCaseContaining(searchTitle)
+                .stream()
+                .map(post -> postMapper.postToPostExcerptDto(post))
+                .collect(Collectors.toList());
+
+        List<PostExcerptDTO> publishedPosts = new ArrayList<>();
+
+        for(PostExcerptDTO pe : foundPosts) {
+            if(pe.getDatePublished().isBefore(now)) {
+                publishedPosts.add(pe);
+            }
+        }
+
+
+            return publishedPosts;
+    }
+
+    @Override
+    public List<PostExcerptDTO> searchPostsByContent(String searchContent) {
+
+        LocalDateTime now = LocalDateTime.now();
+
+
+
+        List<PostExcerptDTO> foundPosts = postsRepository.findAllByContentIgnoreCaseContaining(searchContent)
+                .stream()
+                .map(post -> postMapper.postToPostExcerptDto(post))
+                .collect(Collectors.toList());
+
+        List<PostExcerptDTO> publishedPosts = new ArrayList<>();
+
+        for(PostExcerptDTO pe : foundPosts) {
+            if(pe.getDatePublished().isBefore(now)) {
+                publishedPosts.add(pe);
+            }
+        }
+
+
+        return publishedPosts;
+
     }
 
 

@@ -14,4 +14,7 @@ import java.util.Optional;
 public interface PostsRepository extends PagingAndSortingRepository<Post, Long> {
     Optional<Post> findBySlug(String slug);
     Page<Post> findAllByDatePublishedBefore(LocalDateTime date, Pageable pageRequest);
+    List<Post> findAllByTitleIgnoreCaseContaining( String searchTitle);
+    List<Post> findAllByContentIgnoreCaseContaining( String searchContent);
+
 }
