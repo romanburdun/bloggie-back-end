@@ -5,6 +5,8 @@ import com.bloggie.server.api.v1.models.PostDTO;
 import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
 import com.bloggie.server.domain.Post;
+import com.bloggie.server.domain.Role;
+import com.bloggie.server.domain.RoleName;
 import com.bloggie.server.domain.User;
 import com.bloggie.server.exceptions.ApiRequestException;
 import com.bloggie.server.misc.PostsExcerptsPaged;
@@ -30,6 +32,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -94,14 +97,32 @@ public class PostsServiceImpl implements PostsService {
             page--;
         }
 
+        User user = authService.getRequestUser().orElseThrow(()-> new ApiRequestException("Not authorized request", HttpStatus.UNAUTHORIZED));
+
+
+        Role adminRole = new Role();
+        adminRole.setName(RoleName.ROLE_ADMINISTRATOR);
+
+        List<PostDTO> postsList;
         PageRequest pageRequest = PageRequest.of(page, posts, Sort.Direction.DESC, "dateCreated");
 
-        List<PostDTO> postsList = postsRepository.findAll(pageRequest)
+        if(user.getRoles().contains(adminRole)) {
+            postsList = postsRepository.findAll(pageRequest)
+                    .stream()
+                    .map(post -> postMapper.postToPostDto(post))
+                    .collect(Collectors.toList());
+
+            return new PostsPaged(getTotalPages(posts), postsList);
+        }
+
+
+        postsList = postsRepository.findAllByAuthor(user,pageRequest)
                 .stream()
                 .map(post -> postMapper.postToPostDto(post))
                 .collect(Collectors.toList());
-
         return new PostsPaged(getTotalPages(posts), postsList);
+
+
     }
 
     @Override
