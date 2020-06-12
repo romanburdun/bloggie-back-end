@@ -138,10 +138,20 @@ public class PostsServiceImpl implements PostsService {
     @Override
     public PostDTO updatePostBySlug( String slug, PostUpdateDTO update) {
 
+
+        User user = authService.getRequestUser()
+                .orElseThrow(()-> new UsernameNotFoundException("Not authenticated user."));
+
+
+
         Optional<Post> foundPost = postsRepository.findBySlug(slug);
 
         if(!foundPost.isPresent()) {
             throw new ApiRequestException("Post not found", HttpStatus.NOT_FOUND);
+        }
+
+        if(foundPost.get().getAuthor().getId() != user.getId()) {
+            throw new ApiRequestException("Unauthorized request", HttpStatus.FORBIDDEN);
         }
 
         Post updatePost = foundPost.get();
