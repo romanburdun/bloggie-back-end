@@ -16,4 +16,5 @@ public class PostUpdateDTO {
     private String content;
     private String slug;
     private int readTime;
+    private MetaDTO seo;
 }

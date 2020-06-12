@@ -19,5 +19,7 @@ public class Post extends BaseEntity {
     private String slug;
     private int readTime;
     @OneToOne
+    private Meta seo;
+    @OneToOne
     private User author;
 }

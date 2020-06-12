@@ -12,4 +12,6 @@ public class PageDTO {
     private String title;
     private String content;
     private String slug;
+    private MetaDTO seo;
+
 }

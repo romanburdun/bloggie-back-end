@@ -19,4 +19,5 @@ public class PostDTO {
     private String content;
     private String slug;
     private UserDTO author;
+    private MetaDTO seo;
 }

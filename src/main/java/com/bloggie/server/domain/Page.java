@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
 @Entity
 @Setter
@@ -13,4 +14,6 @@ public class Page extends BaseEntity {
     private String title;
     private String content;
     private String slug;
+    @OneToOne
+    private Meta seo;
 }
