@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,52 +38,41 @@ public class PageServiceImpl implements PageService {
     @Override
     public PageDTO getPageBySlug(String slug) {
 
-        Optional<Page> foundPage = pagesRepository.findBySlug(slug);
+        Page foundPage = pagesRepository.findBySlug(slug)
+                .orElseThrow(()-> new ApiRequestException("Page not found", HttpStatus.NOT_FOUND));
 
-        if(!foundPage.isPresent()) {
-            throw new ApiRequestException("Page not found", HttpStatus.NOT_FOUND);
-        }
-
-        return pageMapper.pageToPageDto(foundPage.get());
+        return pageMapper.pageToPageDto(foundPage);
     }
 
     @Override
     public PageDTO deletePageBySlug(String slug) {
-        Optional<Page> foundPage = pagesRepository.findBySlug(slug);
+        Page foundPage = pagesRepository.findBySlug(slug)
+                .orElseThrow(()-> new ApiRequestException("Page not found", HttpStatus.NOT_FOUND));
 
-        if(!foundPage.isPresent()) {
-            throw new ApiRequestException("Page not found", HttpStatus.NOT_FOUND);
-        }
+        pagesRepository.deleteById(foundPage.getId());
 
-        pagesRepository.deleteById(foundPage.get().getId());
-
-        return pageMapper.pageToPageDto(foundPage.get());
+        return pageMapper.pageToPageDto(foundPage);
 
     }
 
     @Override
     public PageDTO updatePageBySlug(String slug, PageUpdateDTO updateDTO) {
-        Optional<Page> foundPage = pagesRepository.findBySlug(slug);
+        Page foundPage = pagesRepository.findBySlug(slug)
+                .orElseThrow(()->new ApiRequestException("Page not found", HttpStatus.NOT_FOUND));
 
-        if(!foundPage.isPresent()) {
-            throw new ApiRequestException("Page not found", HttpStatus.NOT_FOUND);
+        if(updateDTO.getTitle() != null && !updateDTO.getTitle().equals(foundPage.getTitle())) {
+            foundPage.setTitle(updateDTO.getTitle());
         }
 
-        Page updatePage = foundPage.get();
-
-        if(updateDTO.getTitle() != null && !updateDTO.getTitle().equals(updatePage.getTitle())) {
-            updatePage.setTitle(updateDTO.getTitle());
+        if(updateDTO.getContent() != null && !updateDTO.getContent().equals(foundPage.getContent())) {
+            foundPage.setContent(updateDTO.getContent());
         }
 
-        if(updateDTO.getContent() != null && !updateDTO.getContent().equals(updatePage.getContent())) {
-            updatePage.setContent(updateDTO.getContent());
+        if(updateDTO.getSlug() != null && !updateDTO.getSlug().equals(foundPage.getSlug()) ) {
+            foundPage.setSlug(updateDTO.getSlug());
         }
 
-        if(updateDTO.getSlug() != null && !updateDTO.getSlug().equals(updatePage.getSlug()) ) {
-            updatePage.setSlug(updateDTO.getSlug());
-        }
-
-        return pageMapper.pageToPageDto(pagesRepository.save(updatePage));
+        return pageMapper.pageToPageDto(pagesRepository.save(foundPage));
     }
 
     @Override

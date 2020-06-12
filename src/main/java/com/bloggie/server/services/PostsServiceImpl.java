@@ -22,7 +22,6 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -31,8 +30,6 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -80,7 +77,7 @@ public class PostsServiceImpl implements PostsService {
 
         Post newPost = postMapper.postDtoToPost(postDTO);
 
-        User user = authService.getRequestUser().orElseThrow(() -> new UsernameNotFoundException("Not authenticated request"));
+        User user = authService.getRequestUser().orElseThrow(() -> new ApiRequestException("Not Authorized", HttpStatus.UNAUTHORIZED));
 
         newPost.setAuthor(user);
 
@@ -97,7 +94,8 @@ public class PostsServiceImpl implements PostsService {
             page--;
         }
 
-        User user = authService.getRequestUser().orElseThrow(()-> new ApiRequestException("Not authorized request", HttpStatus.UNAUTHORIZED));
+        User user = authService.getRequestUser()
+                .orElseThrow(()-> new ApiRequestException("Not authenticated", HttpStatus.UNAUTHORIZED));
 
 
         Role adminRole = new Role();
@@ -128,32 +126,26 @@ public class PostsServiceImpl implements PostsService {
     @Override
     public PostDTO getPostBySlug(String slug) {
 
-        Optional<Post> post = postsRepository.findBySlug(slug);
-
-        if(!post.isPresent()) {
-            throw new ApiRequestException("Post not found", HttpStatus.NOT_FOUND);
-        }
-
-        return postMapper.postToPostDto(post.get());
+        Post post = postsRepository.findBySlug(slug)
+                .orElseThrow(() -> new ApiRequestException("Post not found", HttpStatus.NOT_FOUND));
+        return postMapper.postToPostDto(post);
     }
 
     @Override
     public PostDTO deletePostBySlug(String slug) {
 
-        Optional<Post> post =  postsRepository.findBySlug(slug);
+        Post post =  postsRepository.findBySlug(slug)
+                .orElseThrow(()-> new ApiRequestException("Post not found", HttpStatus.NOT_FOUND));
 
-        if(!post.isPresent()) {
-            throw new ApiRequestException("Post not found", HttpStatus.NOT_FOUND);
-        }
 
-        File deleteCover = new File(COVERS_PATH + "/" + post.get().getCover());
+        File deleteCover = new File(COVERS_PATH + "/" + post.getCover());
 
         if(deleteCover.exists()) {
             deleteCover.delete();
         }
-        postsRepository.deleteById(post.get().getId());
+        postsRepository.deleteById(post.getId());
 
-        return postMapper.postToPostDto(post.get());
+        return postMapper.postToPostDto(post);
     }
 
     @Override
@@ -161,51 +153,50 @@ public class PostsServiceImpl implements PostsService {
 
 
         User user = authService.getRequestUser()
-                .orElseThrow(()-> new UsernameNotFoundException("Not authenticated user."));
+                .orElseThrow(()-> new ApiRequestException("Not authenticated", HttpStatus.UNAUTHORIZED));
 
 
 
-        Optional<Post> foundPost = postsRepository.findBySlug(slug);
+        Post foundPost = postsRepository.findBySlug(slug)
+                .orElseThrow(()-> new ApiRequestException("Post not found", HttpStatus.NOT_FOUND));
 
-        if(!foundPost.isPresent()) {
-            throw new ApiRequestException("Post not found", HttpStatus.NOT_FOUND);
-        }
 
-        if(foundPost.get().getAuthor().getId() != user.getId()) {
+
+        if(foundPost.getAuthor().getId() != user.getId()) {
             throw new ApiRequestException("Unauthorized request", HttpStatus.FORBIDDEN);
         }
 
-        Post updatePost = foundPost.get();
+
 
 
         if(update.getTitle() != "" && update.getTitle() != null
-                && !updatePost.getTitle().equals(update.getTitle())) {
-            updatePost.setTitle(update.getTitle());
+                && !foundPost.getTitle().equals(update.getTitle())) {
+            foundPost.setTitle(update.getTitle());
         }
 
-        if(update.getContent() != null && !updatePost.getContent().equals(update.getContent())) {
-            updatePost.setContent(update.getContent());
+        if(update.getContent() != null && !foundPost.getContent().equals(update.getContent())) {
+            foundPost.setContent(update.getContent());
         }
-        if(update.getSlug() != "" && update.getSlug() != null && !updatePost.getSlug().equals(update.getSlug())) {
+        if(update.getSlug() != "" && update.getSlug() != null && !foundPost.getSlug().equals(update.getSlug())) {
 
             String updatedSlug = update.getSlug().toLowerCase().replaceAll(" ", "-");
 
-            updatePost.setSlug(updatedSlug);
+            foundPost.setSlug(updatedSlug);
         }
 
-        if(update.getDatePublished() != null && !update.getDatePublished().equals(updatePost.getDatePublished())) {
-                updatePost.setDatePublished(update.getDatePublished());
+        if(update.getDatePublished() != null && !update.getDatePublished().equals(foundPost.getDatePublished())) {
+                foundPost.setDatePublished(update.getDatePublished());
         }
 
-        if(update.getCover() != null && !update.getCover().equals(updatePost.getCover())) {
-            updatePost.setCover(update.getCover());
+        if(update.getCover() != null && !update.getCover().equals(foundPost.getCover())) {
+            foundPost.setCover(update.getCover());
         }
 
-        if(update.getReadTime() != 0 && update.getReadTime() != updatePost.getReadTime()) {
-            updatePost.setReadTime(update.getReadTime());
+        if(update.getReadTime() != 0 && update.getReadTime() != foundPost.getReadTime()) {
+            foundPost.setReadTime(update.getReadTime());
         }
 
-        return postMapper.postToPostDto(postsRepository.save(updatePost));
+        return postMapper.postToPostDto(postsRepository.save(foundPost));
     }
 
     @Override
@@ -234,13 +225,13 @@ public class PostsServiceImpl implements PostsService {
     @Override
     public Resource getPostCover(String slug) {
 
-        Optional<Post> post = postsRepository.findBySlug(slug);
-        UrlResource resource= null;
-        if(!post.isPresent()) {
-            throw new ApiRequestException("Post not found", HttpStatus.NOT_FOUND);
-        }
+        Post post = postsRepository.findBySlug(slug)
+                .orElseThrow(()-> new ApiRequestException("Post not found", HttpStatus.NOT_FOUND));
 
-        Path filePath = Path.of(COVERS_PATH + "/" + post.get().getCover());
+        UrlResource resource= null;
+
+
+        Path filePath = Path.of(COVERS_PATH + "/" + post.getCover());
 
         try {
             resource = new UrlResource(filePath.toUri());

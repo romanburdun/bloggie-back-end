@@ -5,6 +5,7 @@ import com.bloggie.server.api.v1.models.PostDTO;
 import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
 import com.bloggie.server.domain.Post;
+import com.bloggie.server.domain.User;
 import com.bloggie.server.fixtures.TestFixtures;
 import com.bloggie.server.misc.PostsExcerptsPaged;
 import com.bloggie.server.misc.PostsPaged;
@@ -67,10 +68,12 @@ class PostsServiceTest {
     @Test
     void getPosts() {
 
-        PageRequest pageRequest = PageRequest.of(0, 3, Sort.Direction.DESC, "dateCreated");
+        Pageable pageRequest = PageRequest.of(0, 3, Sort.Direction.DESC, "dateCreated");
         Page<Post> pagedPosts = new PageImpl(TestFixtures.getPosts());
 
         Mockito.when(postsRepository.findAll(pageRequest)).thenReturn(pagedPosts);
+        Mockito.when(postsRepository.findAllByAuthor(any(User.class),any(Pageable.class))).thenReturn(pagedPosts);
+        Mockito.when(authService.getRequestUser()).thenReturn(Optional.of(TestFixtures.getUser()));
 
         PostsPaged posts = postsService.getPosts(1, 3);
 
@@ -96,6 +99,7 @@ class PostsServiceTest {
         update.setContent("Test post content updated");
         update.setSlug("test-post-updated");
 
+        Mockito.when(authService.getRequestUser()).thenReturn(Optional.of(TestFixtures.getUser()));
         Mockito.when(postsRepository.findBySlug(any(String.class))).thenReturn(Optional.of(TestFixtures.getSinglePost()));
         Mockito.when(postsRepository.save(any(Post.class))).thenReturn(TestFixtures.getUpdatedPost());
 
