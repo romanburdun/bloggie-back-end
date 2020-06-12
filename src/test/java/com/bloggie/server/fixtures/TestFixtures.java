@@ -3,11 +3,11 @@ package com.bloggie.server.fixtures;
 import com.bloggie.server.api.v1.models.PageDTO;
 import com.bloggie.server.api.v1.models.PostDTO;
 import com.bloggie.server.api.v1.models.PostExcerptDTO;
-import com.bloggie.server.domain.Page;
-import com.bloggie.server.domain.Post;
+import com.bloggie.server.domain.*;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class TestFixtures {
@@ -232,5 +232,17 @@ public abstract class TestFixtures {
         aboutPage.setContent("<div>About page content here...</div>");
         aboutPage.setSlug("about");
         return Arrays.asList(blogPage, aboutPage);
+    }
+
+    public static User getUser() {
+        Role role = new Role();
+        role.setName(RoleName.ROLE_WRITER);
+        User user = new User();
+        user.setName("John Doe");
+        user.setEmail("jdoe@test.com");
+        user.setPassword("secret");
+        user.setRoles(Collections.singleton(role));
+
+        return user;
     }
 }

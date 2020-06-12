@@ -8,6 +8,7 @@ import com.bloggie.server.exceptions.ApiRequestException;
 import com.bloggie.server.repositories.RolesRepository;
 import com.bloggie.server.repositories.UsersRepository;
 import com.bloggie.server.security.jwt.JwtTokenProvider;
+import com.bloggie.server.security.principals.UserPrincipal;
 import com.bloggie.server.security.requests.AuthRequest;
 import com.bloggie.server.security.requests.SignupRequest;
 import com.bloggie.server.security.responses.AuthToken;
@@ -21,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -79,5 +81,14 @@ public class AuthServiceImpl implements AuthService {
 
 
         return new AuthToken(tokenProvider.getToken(auth));
+    }
+
+
+    @Override
+    public Optional<User> getRequestUser() {
+        UserPrincipal user = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+
+        return usersRepository.findById(user.getId());
     }
 }

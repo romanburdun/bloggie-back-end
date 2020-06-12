@@ -9,6 +9,7 @@ import com.bloggie.server.fixtures.TestFixtures;
 import com.bloggie.server.misc.PostsExcerptsPaged;
 import com.bloggie.server.misc.PostsPaged;
 import com.bloggie.server.repositories.PostsRepository;
+import com.bloggie.server.repositories.UsersRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 
 class PostsServiceTest {
 
@@ -29,11 +31,15 @@ class PostsServiceTest {
     private PostsService postsService;
     @Mock
     private PostsRepository postsRepository;
+    @Mock
+    private UsersRepository usersRepository;
+    @Mock
+    private AuthService authService;
     private PostMapper postMapper = PostMapper.INSTANCE;
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        postsService = new PostsServiceImpl(postsRepository, postMapper);
+        postsService = new PostsServiceImpl(postsRepository, postMapper,authService);
     }
 
 
@@ -49,6 +55,7 @@ class PostsServiceTest {
         post.setDatePublished(LocalDateTime.now());
 
         Mockito.when(postsRepository.save(any(Post.class))).thenReturn(TestFixtures.getSinglePost());
+        Mockito.when(authService.getRequestUser()).thenReturn(Optional.of(TestFixtures.getUser()));
 
         PostDTO createdPost = postsService.createPost(postMapper.postToPostDto(post));
 

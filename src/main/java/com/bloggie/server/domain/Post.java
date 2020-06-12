@@ -3,6 +3,7 @@ package com.bloggie.server.domain;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,4 +18,6 @@ public class Post extends BaseEntity {
     private String excerpt;
     private String slug;
     private int readTime;
+    @OneToOne
+    private User author;
 }

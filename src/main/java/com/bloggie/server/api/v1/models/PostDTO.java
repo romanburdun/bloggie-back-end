@@ -18,4 +18,5 @@ public class PostDTO {
     private String cover;
     private String content;
     private String slug;
+    private UserDTO author;
 }

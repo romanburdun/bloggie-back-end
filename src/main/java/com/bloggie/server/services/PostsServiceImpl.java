@@ -5,10 +5,13 @@ import com.bloggie.server.api.v1.models.PostDTO;
 import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
 import com.bloggie.server.domain.Post;
+import com.bloggie.server.domain.User;
 import com.bloggie.server.exceptions.ApiRequestException;
 import com.bloggie.server.misc.PostsExcerptsPaged;
 import com.bloggie.server.misc.PostsPaged;
 import com.bloggie.server.repositories.PostsRepository;
+import com.bloggie.server.repositories.UsersRepository;
+import com.bloggie.server.security.principals.UserPrincipal;
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
 
@@ -17,6 +20,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -34,7 +38,7 @@ public class PostsServiceImpl implements PostsService {
 
     private final PostsRepository postsRepository;
     private final PostMapper postMapper;
-
+    private final AuthService authService;
     private final String COVERS_PATH = "images/covers";
 
     @Override
@@ -71,8 +75,13 @@ public class PostsServiceImpl implements PostsService {
         }
 
 
+        Post newPost = postMapper.postDtoToPost(postDTO);
 
-        Post createdPost = postsRepository.save(postMapper.postDtoToPost(postDTO));
+        User user = authService.getRequestUser().orElseThrow(() -> new UsernameNotFoundException("Not authenticated request"));
+
+        newPost.setAuthor(user);
+
+        Post createdPost = postsRepository.save(newPost);
 
 
         return postMapper.postToPostDto(createdPost);
