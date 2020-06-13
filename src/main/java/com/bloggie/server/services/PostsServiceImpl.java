@@ -2,6 +2,7 @@ package com.bloggie.server.services;
 
 import com.bloggie.server.api.v1.mappers.MetaMapper;
 import com.bloggie.server.api.v1.mappers.PostMapper;
+import com.bloggie.server.api.v1.models.MetaDTO;
 import com.bloggie.server.api.v1.models.PostDTO;
 import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
@@ -156,23 +157,15 @@ public class PostsServiceImpl implements PostsService {
     @Override
     public PostDTO updatePostBySlug( String slug, PostUpdateDTO update) {
 
-
         User user = authService.getRequestUser()
                 .orElseThrow(()-> new ApiRequestException("Not authenticated", HttpStatus.UNAUTHORIZED));
-
-
 
         Post foundPost = postsRepository.findBySlug(slug)
                 .orElseThrow(()-> new ApiRequestException("Post not found", HttpStatus.NOT_FOUND));
 
-
-
         if(foundPost.getAuthor().getId() != user.getId()) {
             throw new ApiRequestException("Unauthorized request", HttpStatus.FORBIDDEN);
         }
-
-
-
 
         if(update.getTitle() != "" && update.getTitle() != null
                 && !foundPost.getTitle().equals(update.getTitle())) {
@@ -195,10 +188,30 @@ public class PostsServiceImpl implements PostsService {
 
         if(update.getCover() != null && !update.getCover().equals(foundPost.getCover())) {
             foundPost.setCover(update.getCover());
+
+            if(update.getCover().startsWith("data:")) {
+                foundPost.setCover(saveImage(update.getCover(), slug, COVERS_PATH));
+            } else {
+                foundPost.setCover("");
+            }
         }
 
         if(update.getReadTime() != 0 && update.getReadTime() != foundPost.getReadTime()) {
             foundPost.setReadTime(update.getReadTime());
+        }
+
+        if(update.getSeo() != null) {
+            MetaDTO seoDTO = update.getSeo();
+            Meta seo = foundPost.getSeo();
+            if(seoDTO.getSeoTitle() != null && !seo.getSeoTitle().equals(seoDTO.getSeoTitle())) {
+                seo.setSeoTitle(seoDTO.getSeoTitle());
+            }
+
+            if(seoDTO.getSeoDescription() != null && !seo.getSeoDescription().equals(seoDTO.getSeoDescription())) {
+                seo.setSeoDescription(seoDTO.getSeoDescription());
+            }
+
+            foundPost.setSeo(metasRepository.save(seo));
         }
 
         return postMapper.postToPostDto(postsRepository.save(foundPost));
