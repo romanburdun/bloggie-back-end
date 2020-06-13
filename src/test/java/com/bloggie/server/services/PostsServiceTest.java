@@ -1,14 +1,17 @@
 package com.bloggie.server.services;
 
+import com.bloggie.server.api.v1.mappers.MetaMapper;
 import com.bloggie.server.api.v1.mappers.PostMapper;
 import com.bloggie.server.api.v1.models.PostDTO;
 import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
+import com.bloggie.server.domain.Meta;
 import com.bloggie.server.domain.Post;
 import com.bloggie.server.domain.User;
 import com.bloggie.server.fixtures.TestFixtures;
 import com.bloggie.server.misc.PostsExcerptsPaged;
 import com.bloggie.server.misc.PostsPaged;
+import com.bloggie.server.repositories.MetasRepository;
 import com.bloggie.server.repositories.PostsRepository;
 import com.bloggie.server.repositories.UsersRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,14 +36,16 @@ class PostsServiceTest {
     @Mock
     private PostsRepository postsRepository;
     @Mock
-    private UsersRepository usersRepository;
+    private MetasRepository metasRepository;
+
     @Mock
     private AuthService authService;
     private PostMapper postMapper = PostMapper.INSTANCE;
+    private MetaMapper metaMapper = MetaMapper.INSTANCE;
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        postsService = new PostsServiceImpl(postsRepository, postMapper,authService);
+        postsService = new PostsServiceImpl(postsRepository, postMapper,authService, metaMapper, metasRepository);
     }
 
 
@@ -55,6 +60,7 @@ class PostsServiceTest {
         post.setSlug("test-post");
         post.setDatePublished(LocalDateTime.now());
 
+        Mockito.when(metasRepository.save(any(Meta.class))).thenReturn(TestFixtures.getPostMeta());
         Mockito.when(postsRepository.save(any(Post.class))).thenReturn(TestFixtures.getSinglePost());
         Mockito.when(authService.getRequestUser()).thenReturn(Optional.of(TestFixtures.getUser()));
 

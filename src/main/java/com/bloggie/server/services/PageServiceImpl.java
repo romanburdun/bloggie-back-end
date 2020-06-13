@@ -1,10 +1,13 @@
 package com.bloggie.server.services;
 
+import com.bloggie.server.api.v1.mappers.MetaMapper;
 import com.bloggie.server.api.v1.mappers.PageMapper;
 import com.bloggie.server.api.v1.models.PageDTO;
 import com.bloggie.server.api.v1.models.PageUpdateDTO;
+import com.bloggie.server.domain.Meta;
 import com.bloggie.server.domain.Page;
 import com.bloggie.server.exceptions.ApiRequestException;
+import com.bloggie.server.repositories.MetasRepository;
 import com.bloggie.server.repositories.PagesRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,8 @@ public class PageServiceImpl implements PageService {
 
     private final PagesRepository pagesRepository;
     private final PageMapper pageMapper;
+    private final MetasRepository metasRepository;
+    private final MetaMapper metaMapper;
     @Override
     public PageDTO createPage(PageDTO pageDTO) {
 
@@ -30,7 +35,12 @@ public class PageServiceImpl implements PageService {
             throw new ApiRequestException("Bad request", HttpStatus.BAD_REQUEST);
         }
 
+
+        Meta pageMeta = metaMapper.metaDtoToMeta(pageDTO.getSeo());
+
         Page newPage = pageMapper.pageDtoToPage(pageDTO);
+        Meta pageMetaStored = metasRepository.save(pageMeta);
+        newPage.setSeo(pageMetaStored);
 
         return pageMapper.pageToPageDto(pagesRepository.save(newPage));
     }

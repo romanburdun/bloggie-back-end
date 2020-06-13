@@ -1,19 +1,16 @@
 package com.bloggie.server.services;
 
+import com.bloggie.server.api.v1.mappers.MetaMapper;
 import com.bloggie.server.api.v1.mappers.PostMapper;
 import com.bloggie.server.api.v1.models.PostDTO;
 import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
-import com.bloggie.server.domain.Post;
-import com.bloggie.server.domain.Role;
-import com.bloggie.server.domain.RoleName;
-import com.bloggie.server.domain.User;
+import com.bloggie.server.domain.*;
 import com.bloggie.server.exceptions.ApiRequestException;
 import com.bloggie.server.misc.PostsExcerptsPaged;
 import com.bloggie.server.misc.PostsPaged;
+import com.bloggie.server.repositories.MetasRepository;
 import com.bloggie.server.repositories.PostsRepository;
-import com.bloggie.server.repositories.UsersRepository;
-import com.bloggie.server.security.principals.UserPrincipal;
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
 
@@ -39,6 +36,8 @@ public class PostsServiceImpl implements PostsService {
     private final PostsRepository postsRepository;
     private final PostMapper postMapper;
     private final AuthService authService;
+    private final MetaMapper metaMapper;
+    private final MetasRepository metasRepository;
     private final String COVERS_PATH = "images/covers";
 
     @Override
@@ -48,7 +47,7 @@ public class PostsServiceImpl implements PostsService {
             throw new ApiRequestException("Bad request", HttpStatus.BAD_REQUEST);
         }
 
-        if(postDTO.getTitle() == "" || postDTO.getContent() == "") {
+        if(postDTO.getContent() == "" || postDTO.getContent() == "") {
             throw new ApiRequestException("Bad request", HttpStatus.BAD_REQUEST);
         }
 
@@ -68,6 +67,7 @@ public class PostsServiceImpl implements PostsService {
         postDTO.setSlug(slug);
 
 
+
         if(postDTO.getCover().startsWith("data:")) {
             postDTO.setCover(saveImage(postDTO.getCover(), slug, COVERS_PATH));
         } else {
@@ -77,6 +77,8 @@ public class PostsServiceImpl implements PostsService {
 
         Post newPost = postMapper.postDtoToPost(postDTO);
 
+        Meta savedMeta = metasRepository.save(metaMapper.metaDtoToMeta(postDTO.getSeo()));
+        newPost.setSeo(savedMeta);
         User user = authService.getRequestUser().orElseThrow(() -> new ApiRequestException("Not Authorized", HttpStatus.UNAUTHORIZED));
 
         newPost.setAuthor(user);

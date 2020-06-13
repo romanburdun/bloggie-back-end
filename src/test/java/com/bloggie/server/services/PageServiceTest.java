@@ -1,10 +1,13 @@
 package com.bloggie.server.services;
 
+import com.bloggie.server.api.v1.mappers.MetaMapper;
 import com.bloggie.server.api.v1.mappers.PageMapper;
 import com.bloggie.server.api.v1.models.PageDTO;
 import com.bloggie.server.api.v1.models.PageUpdateDTO;
+import com.bloggie.server.domain.Meta;
 import com.bloggie.server.domain.Page;
 import com.bloggie.server.fixtures.TestFixtures;
+import com.bloggie.server.repositories.MetasRepository;
 import com.bloggie.server.repositories.PagesRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,11 +28,14 @@ class PageServiceTest {
     private PageService pageService;
     @Mock
     private PagesRepository pagesRepository;
+    @Mock
+    private MetasRepository metasRepository;
+    private MetaMapper metaMapper = MetaMapper.INSTANCE;
     private PageMapper pageMapper = PageMapper.INSTANCE;
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        pageService = new PageServiceImpl(pagesRepository, pageMapper);
+        pageService = new PageServiceImpl(pagesRepository, pageMapper, metasRepository,metaMapper);
     }
 
     @Test
@@ -40,7 +46,15 @@ class PageServiceTest {
         newPage.setContent("<div>Test page content</div>");
         newPage.setSlug("test-page");
 
+        Meta pageMeta = new Meta();
+        pageMeta.setSeoTitle("Test page SEO title");
+        pageMeta.setSeoDescription("Test page SEO description");
+
+        newPage.setSeo(pageMeta);
+
+        Mockito.when(metasRepository.save(any(Meta.class))).thenReturn(TestFixtures.getPageMeta());
         Mockito.when(pagesRepository.save(any(Page.class))).thenReturn(TestFixtures.getSinglePage());
+
 
         PageDTO createdPage = pageService.createPage(pageMapper.pageToPageDto(newPage));
 
