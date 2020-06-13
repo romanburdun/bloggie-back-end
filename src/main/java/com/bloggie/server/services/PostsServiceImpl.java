@@ -106,13 +106,16 @@ public class PostsServiceImpl implements PostsService {
         List<PostDTO> postsList;
         PageRequest pageRequest = PageRequest.of(page, posts, Sort.Direction.DESC, "dateCreated");
 
-        if(user.getRoles().contains(adminRole)) {
-            postsList = postsRepository.findAll(pageRequest)
-                    .stream()
-                    .map(post -> postMapper.postToPostDto(post))
-                    .collect(Collectors.toList());
 
-            return new PostsPaged(getTotalPages(posts), postsList);
+        for(Role role : user.getRoles()) {
+            if(adminRole.getName() == role.getName()) {
+                postsList = postsRepository.findAll(pageRequest)
+                        .stream()
+                        .map(post -> postMapper.postToPostDto(post))
+                        .collect(Collectors.toList());
+
+                return new PostsPaged(getTotalPages(posts), postsList);
+            }
         }
 
 
