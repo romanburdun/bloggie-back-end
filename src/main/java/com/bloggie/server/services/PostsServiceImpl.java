@@ -187,8 +187,6 @@ public class PostsServiceImpl implements PostsService {
         }
 
         if(update.getCover() != null && !update.getCover().equals(foundPost.getCover())) {
-            foundPost.setCover(update.getCover());
-
             if(update.getCover().startsWith("data:")) {
                 foundPost.setCover(saveImage(update.getCover(), slug, COVERS_PATH));
             } else {
