@@ -2,6 +2,7 @@ package com.bloggie.server.services;
 
 import com.bloggie.server.api.v1.mappers.MetaMapper;
 import com.bloggie.server.api.v1.mappers.PageMapper;
+import com.bloggie.server.api.v1.models.MetaDTO;
 import com.bloggie.server.api.v1.models.PageDTO;
 import com.bloggie.server.api.v1.models.PageUpdateDTO;
 import com.bloggie.server.domain.Meta;
@@ -80,6 +81,23 @@ public class PageServiceImpl implements PageService {
 
         if(updateDTO.getSlug() != null && !updateDTO.getSlug().equals(foundPage.getSlug()) ) {
             foundPage.setSlug(updateDTO.getSlug());
+        }
+
+        if(updateDTO.getSeo() != null) {
+            MetaDTO seoDTO = updateDTO.getSeo();
+            Meta seo = foundPage.getSeo();
+
+            if(seoDTO.getSeoTitle() != null && !seoDTO.getSeoTitle().equals(seo.getSeoTitle())) {
+                seo.setSeoTitle(seoDTO.getSeoTitle());
+            }
+
+            if(seoDTO.getSeoDescription() != null && !seoDTO.getSeoDescription().equals(seo.getSeoDescription())) {
+                seo.setSeoDescription(seoDTO.getSeoDescription());
+            }
+
+            foundPage.setSeo(metasRepository.save(seo));
+
+
         }
 
         return pageMapper.pageToPageDto(pagesRepository.save(foundPage));
