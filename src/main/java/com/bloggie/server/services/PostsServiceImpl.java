@@ -167,52 +167,61 @@ public class PostsServiceImpl implements PostsService {
             throw new ApiRequestException("Unauthorized request", HttpStatus.FORBIDDEN);
         }
 
-        if(update.getTitle() != "" && update.getTitle() != null
-                && !foundPost.getTitle().equals(update.getTitle())) {
-            foundPost.setTitle(update.getTitle());
-        }
+        if(!foundPost.equals(postMapper.postUpdateDtoToPost(update))) {
 
-        if(update.getContent() != null && !foundPost.getContent().equals(update.getContent())) {
-            foundPost.setContent(update.getContent());
-        }
-        if(update.getSlug() != "" && update.getSlug() != null && !foundPost.getSlug().equals(update.getSlug())) {
+            if(update.getTitle() != "" && update.getTitle() != null
+                    && !update.getTitle().equals(foundPost.getTitle())) {
+                foundPost.setTitle(update.getTitle());
+            }
 
-            String updatedSlug = update.getSlug().toLowerCase().replaceAll(" ", "-");
 
-            foundPost.setSlug(updatedSlug);
-        }
+            if(update.getContent() != null && update.getContent() != ""
+                    && !update.getContent().equals(foundPost.getContent())) {
+                foundPost.setContent(update.getContent());
+            }
 
-        if(update.getDatePublished() != null && !update.getDatePublished().equals(foundPost.getDatePublished())) {
+            if(update.getSlug() != "" && update.getSlug() != null
+                    && !update.getSlug().equals(foundPost.getSlug())) {
+                String updatedSlug = update.getSlug().toLowerCase().replaceAll(" ", "-");
+                foundPost.setSlug(updatedSlug);
+            }
+
+
+            if(update.getDatePublished() != null
+                    && !update.getDatePublished().equals(foundPost.getDatePublished())) {
                 foundPost.setDatePublished(update.getDatePublished());
-        }
-
-        if(update.getCover() != null && !update.getCover().equals(foundPost.getCover())) {
-            if(update.getCover().startsWith("data:")) {
-                foundPost.setCover(saveImage(update.getCover(), slug, COVERS_PATH));
-            } else {
-                foundPost.setCover("");
-            }
-        }
-
-        if(update.getReadTime() != 0 && update.getReadTime() != foundPost.getReadTime()) {
-            foundPost.setReadTime(update.getReadTime());
-        }
-
-        if(update.getSeo() != null) {
-            MetaDTO seoDTO = update.getSeo();
-            Meta seo = foundPost.getSeo();
-            if(seoDTO.getSeoTitle() != null && !seo.getSeoTitle().equals(seoDTO.getSeoTitle())) {
-                seo.setSeoTitle(seoDTO.getSeoTitle());
             }
 
-            if(seoDTO.getSeoDescription() != null && !seo.getSeoDescription().equals(seoDTO.getSeoDescription())) {
-                seo.setSeoDescription(seoDTO.getSeoDescription());
+            if(update.getCover() != null && !update.getCover().equals(foundPost.getCover())) {
+                if(update.getCover().startsWith("data:")) {
+                    foundPost.setCover(saveImage(update.getCover(), slug, COVERS_PATH));
+                } else {
+                    foundPost.setCover("");
+                }
             }
 
-            foundPost.setSeo(metasRepository.save(seo));
+            if(update.getReadTime() != 0) {
+                foundPost.setReadTime(update.getReadTime());
+            }
+
+            if(update.getSeo() != null) {
+                MetaDTO seoDTO = update.getSeo();
+                Meta seo = foundPost.getSeo();
+                if(seoDTO.getSeoTitle() != null && !seo.getSeoTitle().equals(seoDTO.getSeoTitle())) {
+                    seo.setSeoTitle(seoDTO.getSeoTitle());
+                }
+
+                if(seoDTO.getSeoDescription() != null && !seo.getSeoDescription().equals(seoDTO.getSeoDescription())) {
+                    seo.setSeoDescription(seoDTO.getSeoDescription());
+                }
+
+                foundPost.setSeo(metasRepository.save(seo));
+            }
+
+            return postMapper.postToPostDto(postsRepository.save(foundPost));
         }
 
-        return postMapper.postToPostDto(postsRepository.save(foundPost));
+        return postMapper.postToPostDto(foundPost);
     }
 
     @Override

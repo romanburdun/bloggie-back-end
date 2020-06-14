@@ -13,6 +13,7 @@ public class PostUpdateDTO {
     private LocalDateTime datePublished;
     private String cover;
     private String title;
+    private String excerpt;
     private String content;
     private String slug;
     private int readTime;

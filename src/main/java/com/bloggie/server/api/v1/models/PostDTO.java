@@ -14,6 +14,7 @@ public class PostDTO {
     private LocalDateTime dateUpdated;
     private LocalDateTime datePublished;
     private String title;
+    private String excerpt;
     private int readTime;
     private String cover;
     private String content;

@@ -19,4 +19,19 @@ public class Meta extends BaseEntity {
     @NotEmpty
     private String seoDescription;
 
+
+    @Override
+    public boolean equals(Object obj) {
+       Meta anotherMeta = (Meta) obj;
+
+       if(!this.getSeoTitle().equals(anotherMeta.getSeoTitle())) {
+           return false;
+       }
+
+       if(!this.getSeoDescription().equals(anotherMeta.getSeoDescription())) {
+           return false;
+       }
+
+        return true;
+    }
 }
