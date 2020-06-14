@@ -1,13 +1,13 @@
 package com.bloggie.server.api.v1.mappers;
 
 import com.bloggie.server.api.v1.models.PageDTO;
+import com.bloggie.server.api.v1.models.PageUpdateDTO;
 import com.bloggie.server.domain.Page;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PageMapperImplTest {
+class PageMapperTest {
 
     private final PageMapper pageMapper = PageMapper.INSTANCE;
 
@@ -41,5 +41,21 @@ class PageMapperImplTest {
         assertEquals("Test page title", pageDTO.getTitle());
         assertEquals("<p>Test page content</p>", pageDTO.getContent());
         assertEquals("test-page", pageDTO.getSlug());
+    }
+
+    @Test
+    void pageUpdateDtoToPage() {
+
+        PageUpdateDTO pageUpdateDTO = new PageUpdateDTO();
+        pageUpdateDTO.setTitle("Test page title");
+        pageUpdateDTO.setContent("<p>Test page content</p>");
+        pageUpdateDTO.setSlug("test-page");
+
+        Page page = pageMapper.pageUpdateDtoToPage(pageUpdateDTO);
+
+        assertNotNull(page);
+        assertEquals("Test page title", page.getTitle());
+        assertEquals("<p>Test page content</p>", page.getContent());
+        assertEquals("test-page", page.getSlug());
     }
 }
