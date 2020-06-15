@@ -3,17 +3,17 @@ package com.bloggie.server.services;
 import com.bloggie.server.api.v1.mappers.MetaMapper;
 import com.bloggie.server.api.v1.mappers.PostMapper;
 import com.bloggie.server.api.v1.models.PostDTO;
-import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
 import com.bloggie.server.domain.Meta;
 import com.bloggie.server.domain.Post;
 import com.bloggie.server.domain.User;
-import com.bloggie.server.fixtures.TestFixtures;
+import com.bloggie.server.fixtures.MetaFixtures;
+import com.bloggie.server.fixtures.PostsFixtures;
+import com.bloggie.server.fixtures.UsersFixtures;
 import com.bloggie.server.misc.PostsExcerptsPaged;
 import com.bloggie.server.misc.PostsPaged;
 import com.bloggie.server.repositories.MetasRepository;
 import com.bloggie.server.repositories.PostsRepository;
-import com.bloggie.server.repositories.UsersRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -22,12 +22,10 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 
 class PostsServiceTest {
 
@@ -60,9 +58,9 @@ class PostsServiceTest {
         post.setSlug("test-post");
         post.setDatePublished(LocalDateTime.now());
 
-        Mockito.when(metasRepository.save(any(Meta.class))).thenReturn(TestFixtures.getPostMeta());
-        Mockito.when(postsRepository.save(any(Post.class))).thenReturn(TestFixtures.getSinglePost());
-        Mockito.when(authService.getRequestUser()).thenReturn(Optional.of(TestFixtures.getUser()));
+        Mockito.when(metasRepository.save(any(Meta.class))).thenReturn(MetaFixtures.getPostMeta());
+        Mockito.when(postsRepository.save(any(Post.class))).thenReturn(PostsFixtures.getSinglePost());
+        Mockito.when(authService.getRequestUser()).thenReturn(Optional.of(UsersFixtures.getUser()));
 
         PostDTO createdPost = postsService.createPost(postMapper.postToPostDto(post));
 
@@ -75,11 +73,11 @@ class PostsServiceTest {
     void getPosts() {
 
         Pageable pageRequest = PageRequest.of(0, 3, Sort.Direction.DESC, "dateCreated");
-        Page<Post> pagedPosts = new PageImpl(TestFixtures.getPosts());
+        Page<Post> pagedPosts = new PageImpl(PostsFixtures.getPosts());
 
         Mockito.when(postsRepository.findAll(pageRequest)).thenReturn(pagedPosts);
         Mockito.when(postsRepository.findAllByAuthor(any(User.class),any(Pageable.class))).thenReturn(pagedPosts);
-        Mockito.when(authService.getRequestUser()).thenReturn(Optional.of(TestFixtures.getUser()));
+        Mockito.when(authService.getRequestUser()).thenReturn(Optional.of(UsersFixtures.getUser()));
 
         PostsPaged posts = postsService.getPosts(1, 3);
 
@@ -91,7 +89,7 @@ class PostsServiceTest {
     @Test
     void deletePostBySlug() {
 
-        Mockito.when(postsRepository.findBySlug(any(String.class))).thenReturn(Optional.of(TestFixtures.getSinglePost()));
+        Mockito.when(postsRepository.findBySlug(any(String.class))).thenReturn(Optional.of(PostsFixtures.getSinglePost()));
         PostDTO deletedPost = postsService.deletePostBySlug("test-post");
         assertNotNull(deletedPost);
         assertEquals("test-post", deletedPost.getSlug());
@@ -105,9 +103,9 @@ class PostsServiceTest {
         update.setContent("Test post content updated");
         update.setSlug("test-post-updated");
 
-        Mockito.when(authService.getRequestUser()).thenReturn(Optional.of(TestFixtures.getUser()));
-        Mockito.when(postsRepository.findBySlug(any(String.class))).thenReturn(Optional.of(TestFixtures.getSinglePost()));
-        Mockito.when(postsRepository.save(any(Post.class))).thenReturn(TestFixtures.getUpdatedPost());
+        Mockito.when(authService.getRequestUser()).thenReturn(Optional.of(UsersFixtures.getUser()));
+        Mockito.when(postsRepository.findBySlug(any(String.class))).thenReturn(Optional.of(PostsFixtures.getSinglePost()));
+        Mockito.when(postsRepository.save(any(Post.class))).thenReturn(PostsFixtures.getUpdatedPost());
 
         PostDTO updatedPost = postsService.updatePostBySlug("test-post", update);
 
@@ -121,7 +119,7 @@ class PostsServiceTest {
     @Test
     void getPostBySlug() {
 
-        Mockito.when(postsRepository.findBySlug(any(String.class))).thenReturn(Optional.of(TestFixtures.getSinglePost()));
+        Mockito.when(postsRepository.findBySlug(any(String.class))).thenReturn(Optional.of(PostsFixtures.getSinglePost()));
         PostDTO fetchedPost = postsService.getPostBySlug("test-post");
 
         assertNotNull(fetchedPost);
@@ -132,7 +130,7 @@ class PostsServiceTest {
     void getPostsExcerpts() {
 
         Pageable pageRequest = PageRequest.of(0, 3, Sort.Direction.DESC, "dateCreated");
-        Page<Post> pagedPosts = new PageImpl(TestFixtures.getPosts());
+        Page<Post> pagedPosts = new PageImpl(PostsFixtures.getPosts());
 
         Mockito.when(postsRepository.findAllByDatePublishedBefore(any(LocalDateTime.class),any(Pageable.class))).thenReturn(pagedPosts);
 

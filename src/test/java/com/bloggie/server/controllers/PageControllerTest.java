@@ -2,7 +2,7 @@ package com.bloggie.server.controllers;
 
 import com.bloggie.server.api.v1.models.PageDTO;
 import com.bloggie.server.api.v1.models.PageUpdateDTO;
-import com.bloggie.server.fixtures.TestFixtures;
+import com.bloggie.server.fixtures.PagesFixtures;
 import com.bloggie.server.services.PageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ class PageControllerTest extends AsJsonController {
         newPage.setContent("<div>Test page content</div>");
         newPage.setSlug("test-page");
 
-        Mockito.when(pageService.createPage(any(PageDTO.class))).thenReturn(TestFixtures.getSinglePageDTO());
+        Mockito.when(pageService.createPage(any(PageDTO.class))).thenReturn(PagesFixtures.getSinglePageDTO());
 
         mockMvc.perform(post("/api/v1/pages").contentType(MediaType.APPLICATION_JSON).content(asJsonString(newPage)))
                 .andExpect(status().isOk())
@@ -64,7 +64,7 @@ class PageControllerTest extends AsJsonController {
         update.setContent("<div>Test page content updated</div>");
         update.setSlug("test-page");
 
-        Mockito.when(pageService.updatePageBySlug("test-page", update)).thenReturn(TestFixtures.getUpdatedPageDTO());
+        Mockito.when(pageService.updatePageBySlug("test-page", update)).thenReturn(PagesFixtures.getUpdatedPageDTO());
 
         mockMvc.perform(put("/api/v1/pages/test-page").contentType(MediaType.APPLICATION_JSON).content(asJsonString(update)))
                 .andExpect(status().isOk())
@@ -76,7 +76,7 @@ class PageControllerTest extends AsJsonController {
     @Test
     public void getPagesBySlug() throws Exception {
 
-        Mockito.when(pageService.getPageBySlug(any(String.class))).thenReturn(TestFixtures.getSinglePageDTO());
+        Mockito.when(pageService.getPageBySlug(any(String.class))).thenReturn(PagesFixtures.getSinglePageDTO());
 
         mockMvc.perform(get("/api/v1/pages/test-page"))
                 .andExpect(status().isOk())
@@ -90,7 +90,7 @@ class PageControllerTest extends AsJsonController {
     @Test
     public void getPages() throws Exception {
 
-        Mockito.when(pageService.getAllPages()).thenReturn(TestFixtures.getPagesDTOs());
+        Mockito.when(pageService.getAllPages()).thenReturn(PagesFixtures.getPagesDTOs());
 
         mockMvc.perform(get("/api/v1/pages"))
                 .andExpect(status().isOk())

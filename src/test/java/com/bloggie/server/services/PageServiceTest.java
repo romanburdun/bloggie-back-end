@@ -6,7 +6,8 @@ import com.bloggie.server.api.v1.models.PageDTO;
 import com.bloggie.server.api.v1.models.PageUpdateDTO;
 import com.bloggie.server.domain.Meta;
 import com.bloggie.server.domain.Page;
-import com.bloggie.server.fixtures.TestFixtures;
+import com.bloggie.server.fixtures.MetaFixtures;
+import com.bloggie.server.fixtures.PagesFixtures;
 import com.bloggie.server.repositories.MetasRepository;
 import com.bloggie.server.repositories.PagesRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,8 +53,8 @@ class PageServiceTest {
 
         newPage.setSeo(pageMeta);
 
-        Mockito.when(metasRepository.save(any(Meta.class))).thenReturn(TestFixtures.getPageMeta());
-        Mockito.when(pagesRepository.save(any(Page.class))).thenReturn(TestFixtures.getSinglePage());
+        Mockito.when(metasRepository.save(any(Meta.class))).thenReturn(MetaFixtures.getPageMeta());
+        Mockito.when(pagesRepository.save(any(Page.class))).thenReturn(PagesFixtures.getSinglePage());
 
 
         PageDTO createdPage = pageService.createPage(pageMapper.pageToPageDto(newPage));
@@ -66,7 +67,7 @@ class PageServiceTest {
     void getPageBySlug() {
 
         Mockito.when(pagesRepository.findBySlug(any(String.class)))
-                .thenReturn(Optional.of(TestFixtures.getSinglePage()));
+                .thenReturn(Optional.of(PagesFixtures.getSinglePage()));
 
         PageDTO foundPage = pageService.getPageBySlug("test-page");
 
@@ -79,7 +80,7 @@ class PageServiceTest {
     void deletePageBySlug() {
 
         Mockito.when(pagesRepository.findBySlug(any(String.class)))
-                .thenReturn(Optional.of(TestFixtures.getSinglePage()));
+                .thenReturn(Optional.of(PagesFixtures.getSinglePage()));
 
         PageDTO deletedPage = pageService.deletePageBySlug("test-page");
 
@@ -95,8 +96,8 @@ class PageServiceTest {
         update.setContent("<div>Test page content updated</div>");
         update.setSlug("test-page");
 
-        Mockito.when(pagesRepository.findBySlug(anyString())).thenReturn(Optional.of(TestFixtures.getSinglePage()));
-        Mockito.when(pagesRepository.save(any(Page.class))).thenReturn(TestFixtures.getUpdatedPage());
+        Mockito.when(pagesRepository.findBySlug(anyString())).thenReturn(Optional.of(PagesFixtures.getSinglePage()));
+        Mockito.when(pagesRepository.save(any(Page.class))).thenReturn(PagesFixtures.getUpdatedPage());
 
         PageDTO updatedPage = pageService.updatePageBySlug("test-page", update);
 
@@ -108,7 +109,7 @@ class PageServiceTest {
     @Test
     void getAllPages() {
 
-        Mockito.when(pagesRepository.findAll()).thenReturn(TestFixtures.getPages());
+        Mockito.when(pagesRepository.findAll()).thenReturn(PagesFixtures.getPages());
 
         List<PageDTO> pages = pageService.getAllPages();
 

@@ -2,7 +2,7 @@ package com.bloggie.server.controllers;
 
 import com.bloggie.server.api.v1.models.PostDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
-import com.bloggie.server.fixtures.TestFixtures;
+import com.bloggie.server.fixtures.PostsFixtures;
 import com.bloggie.server.misc.PostsExcerptsPaged;
 import com.bloggie.server.misc.PostsPaged;
 import com.bloggie.server.services.PostsService;
@@ -46,7 +46,7 @@ class PostControllerTest extends AsJsonController {
         post.setReadTime(10);
         post.setSlug("test-post");
 
-        Mockito.when(postsService.createPost(any(PostDTO.class))).thenReturn(TestFixtures.getSinglePostDTO());
+        Mockito.when(postsService.createPost(any(PostDTO.class))).thenReturn(PostsFixtures.getSinglePostDTO());
 
         String data = asJsonString(post);
         System.out.println(data);
@@ -64,7 +64,7 @@ class PostControllerTest extends AsJsonController {
     @Test
     void getPosts() throws Exception {
 
-        PostsPaged response = new PostsPaged(1,TestFixtures.getPostsDTOs());
+        PostsPaged response = new PostsPaged(1,PostsFixtures.getPostsDTOs());
         Mockito.when(postsService.getPosts(0, 3)).thenReturn(response);
 
         mockMvc.perform(get("/api/v1/posts?page=1&posts=3"))
@@ -74,7 +74,7 @@ class PostControllerTest extends AsJsonController {
 
     @Test
     void deletePost() throws Exception {
-        Mockito.when(postsService.deletePostBySlug(any(String.class))).thenReturn(TestFixtures.getSinglePostDTO());
+        Mockito.when(postsService.deletePostBySlug(any(String.class))).thenReturn(PostsFixtures.getSinglePostDTO());
 
         mockMvc.perform(delete("/api/v1/posts/test-post"))
                 .andExpect(status().isOk())
@@ -90,7 +90,7 @@ class PostControllerTest extends AsJsonController {
         update.setSlug("updated-test-post");
         update.setReadTime(5);
 
-        Mockito.when(postsService.updatePostBySlug("test-post",update)).thenReturn(TestFixtures.getUpdatedPostDTO());
+        Mockito.when(postsService.updatePostBySlug("test-post",update)).thenReturn(PostsFixtures.getUpdatedPostDTO());
 
          mockMvc.perform(put("/api/v1/posts/test-post").contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(update)))
@@ -101,7 +101,7 @@ class PostControllerTest extends AsJsonController {
 
     @Test
     void getPostBySlugTest() throws Exception {
-        Mockito.when(postsService.getPostBySlug("test-post")).thenReturn(TestFixtures.getSinglePostDTO());
+        Mockito.when(postsService.getPostBySlug("test-post")).thenReturn(PostsFixtures.getSinglePostDTO());
         mockMvc.perform(get("/api/v1/posts/test-post"))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
@@ -110,7 +110,7 @@ class PostControllerTest extends AsJsonController {
 
     @Test
     void getPostsExcerpts() throws Exception {
-        PostsExcerptsPaged response = new PostsExcerptsPaged(1, TestFixtures.getPostsExcerptsDTOs());
+        PostsExcerptsPaged response = new PostsExcerptsPaged(1,PostsFixtures.getPostsExcerptsDTOs());
         Mockito.when(postsService.getPostsExcerpts(0, 3)).thenReturn(response);
 
         mockMvc.perform(get("/api/v1/posts/excerpt?page=0&posts=3"))
