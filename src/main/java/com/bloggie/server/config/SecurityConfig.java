@@ -71,6 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().formLogin().disable()
                 .authorizeRequests()
                 .antMatchers("/h2-console/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/site").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/posts/excerpts***").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/posts/by-title***").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/posts/by-content***").permitAll()
@@ -85,6 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/v1/pages").hasRole("ADMINISTRATOR")
                 .antMatchers(HttpMethod.PUT, "/api/v1/pages/**").hasRole("ADMINISTRATOR")
                 .antMatchers(HttpMethod.DELETE, "/api/v1/pages/**").hasRole("ADMINISTRATOR")
+                .antMatchers(HttpMethod.PUT, "/api/v1/site").hasRole("ADMINISTRATOR")
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

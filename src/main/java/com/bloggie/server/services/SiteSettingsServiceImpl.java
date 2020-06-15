@@ -35,7 +35,7 @@ public class SiteSettingsServiceImpl implements SiteSettingsService {
     }
 
     @Override
-    public SiteSettingsDTO getSettings(SiteSettingsDTO settingsDTO) {
+    public SiteSettingsDTO getSettings() {
 
         SiteSettings settings = siteSettingsRepository.findById(1L)
                 .orElseThrow(()-> new ApiRequestException("Server settings not exist", HttpStatus.INTERNAL_SERVER_ERROR));
