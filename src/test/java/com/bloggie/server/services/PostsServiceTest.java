@@ -3,6 +3,7 @@ package com.bloggie.server.services;
 import com.bloggie.server.api.v1.mappers.MetaMapper;
 import com.bloggie.server.api.v1.mappers.PostMapper;
 import com.bloggie.server.api.v1.models.PostDTO;
+import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
 import com.bloggie.server.domain.Meta;
 import com.bloggie.server.domain.Post;
@@ -22,10 +23,12 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 
 class PostsServiceTest {
 
@@ -153,5 +156,27 @@ class PostsServiceTest {
 
         assertNotNull(fetchedExcerpts);
         assertEquals(3, fetchedExcerpts.getPostsExcerpts().size());
+    }
+
+    @Test
+    void searchPostsByTitle() {
+
+        Mockito.when(postsRepository.findAllByTitleIgnoreCaseContaining(anyString())).thenReturn(PostsFixtures.getPosts());
+
+        List<PostExcerptDTO> foundPosts = postsService.searchPostsByTitle("test");
+
+        assertNotNull(foundPosts);
+        assertEquals(3, foundPosts.size());
+    }
+
+    @Test
+    void searchPostsByContent() {
+
+        Mockito.when(postsRepository.findAllByContentIgnoreCaseContaining(anyString())).thenReturn(PostsFixtures.getPosts());
+
+        List<PostExcerptDTO> foundPosts = postsService.searchPostsByContent("test");
+
+        assertNotNull(foundPosts);
+        assertEquals(3, foundPosts.size());
     }
 }

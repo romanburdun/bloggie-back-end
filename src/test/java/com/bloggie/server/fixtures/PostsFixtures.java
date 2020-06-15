@@ -4,13 +4,17 @@ import com.bloggie.server.api.v1.models.PostDTO;
 import com.bloggie.server.api.v1.models.PostExcerptDTO;
 import com.bloggie.server.domain.Post;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
 public abstract class PostsFixtures {
 
     public static List<Post> getPosts() {
+
+        LocalDateTime published = LocalDateTime.of(LocalDate.of(2020, 5, 3), LocalTime.of(14,35,40));
 
         Post postOne = new Post();
         postOne.setId(1L);
@@ -21,7 +25,7 @@ public abstract class PostsFixtures {
         postOne.setCover("testPostOne.webp");
         postOne.setReadTime(10);
         postOne.setSlug("test-post-one");
-        postOne.setDatePublished(LocalDateTime.now());
+        postOne.setDatePublished(published);
         postOne.setAuthor(UsersFixtures.getWriterUser());
 
 
@@ -34,7 +38,7 @@ public abstract class PostsFixtures {
         postTwo.setCover("testPostTwo.webp");
         postTwo.setReadTime(25);
         postTwo.setSlug("test-post-two");
-        postTwo.setDatePublished(LocalDateTime.now());
+        postTwo.setDatePublished(published);
         postTwo.setAuthor(UsersFixtures.getWriterUser());
 
         Post postThree = new Post();
@@ -46,6 +50,7 @@ public abstract class PostsFixtures {
         postThree.setCover("testPostThree.webp");
         postThree.setReadTime(5);
         postThree.setSlug("post-three");
+        postThree.setDatePublished(published);
         postThree.setAuthor(UsersFixtures.getWriterUser());
 
         return Arrays.asList(postOne, postTwo, postThree);
