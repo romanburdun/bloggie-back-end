@@ -60,7 +60,7 @@ class PostsServiceTest {
 
         Mockito.when(metasRepository.save(any(Meta.class))).thenReturn(MetaFixtures.getPostMeta());
         Mockito.when(postsRepository.save(any(Post.class))).thenReturn(PostsFixtures.getSinglePost());
-        Mockito.when(authService.getRequestUser()).thenReturn(Optional.of(UsersFixtures.getUser()));
+        Mockito.when(authService.getRequestUser()).thenReturn(Optional.of(UsersFixtures.getWriterUser()));
 
         PostDTO createdPost = postsService.createPost(postMapper.postToPostDto(post));
 
@@ -70,14 +70,13 @@ class PostsServiceTest {
     }
 
     @Test
-    void getPosts() {
+    void getPostsAsWriter() {
 
-        Pageable pageRequest = PageRequest.of(0, 3, Sort.Direction.DESC, "dateCreated");
         Page<Post> pagedPosts = new PageImpl(PostsFixtures.getPosts());
 
-        Mockito.when(postsRepository.findAll(pageRequest)).thenReturn(pagedPosts);
+        Mockito.when(authService.getRequestUser()).thenReturn(Optional.of(UsersFixtures.getWriterUser()));
         Mockito.when(postsRepository.findAllByAuthor(any(User.class),any(Pageable.class))).thenReturn(pagedPosts);
-        Mockito.when(authService.getRequestUser()).thenReturn(Optional.of(UsersFixtures.getUser()));
+
 
         PostsPaged posts = postsService.getPosts(1, 3);
 
@@ -85,6 +84,22 @@ class PostsServiceTest {
         assertEquals(3, posts.getPosts().size());
 
     }
+
+    @Test
+    void getPostsAsAdministrator() {
+
+        Page<Post> pagedPosts = new PageImpl(PostsFixtures.getPosts());
+
+        Mockito.when(authService.getRequestUser()).thenReturn(Optional.of(UsersFixtures.getAdminUser()));
+        Mockito.when(postsRepository.findAll(any(Pageable.class))).thenReturn(pagedPosts);
+
+        PostsPaged posts = postsService.getPosts(1, 3);
+
+        assertNotNull(posts);
+        assertEquals(3, posts.getPosts().size());
+
+    }
+
 
     @Test
     void deletePostBySlug() {
@@ -103,7 +118,7 @@ class PostsServiceTest {
         update.setContent("Test post content updated");
         update.setSlug("test-post-updated");
 
-        Mockito.when(authService.getRequestUser()).thenReturn(Optional.of(UsersFixtures.getUser()));
+        Mockito.when(authService.getRequestUser()).thenReturn(Optional.of(UsersFixtures.getWriterUser()));
         Mockito.when(postsRepository.findBySlug(any(String.class))).thenReturn(Optional.of(PostsFixtures.getSinglePost()));
         Mockito.when(postsRepository.save(any(Post.class))).thenReturn(PostsFixtures.getUpdatedPost());
 
@@ -129,7 +144,6 @@ class PostsServiceTest {
     @Test
     void getPostsExcerpts() {
 
-        Pageable pageRequest = PageRequest.of(0, 3, Sort.Direction.DESC, "dateCreated");
         Page<Post> pagedPosts = new PageImpl(PostsFixtures.getPosts());
 
         Mockito.when(postsRepository.findAllByDatePublishedBefore(any(LocalDateTime.class),any(Pageable.class))).thenReturn(pagedPosts);

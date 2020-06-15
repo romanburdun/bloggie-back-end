@@ -4,21 +4,33 @@ import com.bloggie.server.domain.Role;
 import com.bloggie.server.domain.RoleName;
 import com.bloggie.server.domain.User;
 
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collections;
+
 
 public abstract class UsersFixtures {
-    public static User getUser() {
+
+    public static User getWriterUser() {
         Role roleOne = new Role();
         roleOne.setName(RoleName.ROLE_WRITER);
-        Role roleTwo = new Role();
-        roleTwo.setName(RoleName.ROLE_ADMINISTRATOR);
         User user = new User();
         user.setId(1L);
-        user.setName("John Doe");
-        user.setEmail("jdoe@test.com");
+        user.setName("John Writer");
+        user.setEmail("jwriter@test.com");
         user.setPassword("secret");
-        user.setRoles(new HashSet<>(Arrays.asList(roleOne, roleTwo)));
+        user.setRoles(Collections.singleton(roleOne));
+
+        return user;
+    }
+
+    public static User getAdminUser() {
+        Role roleOne = new Role();
+        roleOne.setName(RoleName.ROLE_ADMINISTRATOR);
+        User user = new User();
+        user.setId(1L);
+        user.setName("John Administrator");
+        user.setEmail("jadmin@test.com");
+        user.setPassword("secret");
+        user.setRoles(Collections.singleton(roleOne));
 
         return user;
     }

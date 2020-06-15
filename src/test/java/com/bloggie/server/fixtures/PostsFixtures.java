@@ -22,7 +22,7 @@ public abstract class PostsFixtures {
         postOne.setReadTime(10);
         postOne.setSlug("test-post-one");
         postOne.setDatePublished(LocalDateTime.now());
-        postOne.setAuthor(UsersFixtures.getUser());
+        postOne.setAuthor(UsersFixtures.getWriterUser());
 
 
         Post postTwo = new Post();
@@ -35,7 +35,7 @@ public abstract class PostsFixtures {
         postTwo.setReadTime(25);
         postTwo.setSlug("test-post-two");
         postTwo.setDatePublished(LocalDateTime.now());
-        postTwo.setAuthor(UsersFixtures.getUser());
+        postTwo.setAuthor(UsersFixtures.getWriterUser());
 
         Post postThree = new Post();
         postThree.setId(3L);
@@ -46,7 +46,7 @@ public abstract class PostsFixtures {
         postThree.setCover("testPostThree.webp");
         postThree.setReadTime(5);
         postThree.setSlug("post-three");
-        postThree.setAuthor(UsersFixtures.getUser());
+        postThree.setAuthor(UsersFixtures.getWriterUser());
 
         return Arrays.asList(postOne, postTwo, postThree);
     }
@@ -126,7 +126,7 @@ public abstract class PostsFixtures {
         post.setReadTime(10);
         post.setSlug("test-post");
         post.setDatePublished(LocalDateTime.now());
-        post.setAuthor(UsersFixtures.getUser());
+        post.setAuthor(UsersFixtures.getWriterUser());
 
         return post;
     }
