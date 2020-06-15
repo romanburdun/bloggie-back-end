@@ -101,7 +101,7 @@ class PostControllerTest extends AsJsonController {
 
     @Test
     void getPostBySlugTest() throws Exception {
-        Mockito.when(postsService.getPostBySlug("test-post")).thenReturn(PostsFixtures.getSinglePostDTO());
+        Mockito.when(postsService.getPostBySlug("test-post")).thenReturn(PostsFixtures.getSinglePostReader());
         mockMvc.perform(get("/api/v1/posts/test-post"))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();

@@ -4,6 +4,7 @@ import com.bloggie.server.api.v1.mappers.MetaMapper;
 import com.bloggie.server.api.v1.mappers.PostMapper;
 import com.bloggie.server.api.v1.models.PostDTO;
 import com.bloggie.server.api.v1.models.PostExcerptDTO;
+import com.bloggie.server.api.v1.models.PostReaderDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
 import com.bloggie.server.domain.Meta;
 import com.bloggie.server.domain.Post;
@@ -138,7 +139,7 @@ class PostsServiceTest {
     void getPostBySlug() {
 
         Mockito.when(postsRepository.findBySlug(any(String.class))).thenReturn(Optional.of(PostsFixtures.getSinglePost()));
-        PostDTO fetchedPost = postsService.getPostBySlug("test-post");
+        PostReaderDTO fetchedPost = postsService.getPostBySlug("test-post");
 
         assertNotNull(fetchedPost);
         assertEquals("test-post", fetchedPost.getSlug());

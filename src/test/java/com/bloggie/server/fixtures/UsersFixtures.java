@@ -1,5 +1,6 @@
 package com.bloggie.server.fixtures;
 
+import com.bloggie.server.api.v1.models.UserDTO;
 import com.bloggie.server.domain.Role;
 import com.bloggie.server.domain.RoleName;
 import com.bloggie.server.domain.User;
@@ -18,6 +19,14 @@ public abstract class UsersFixtures {
         user.setEmail("jwriter@test.com");
         user.setPassword("secret");
         user.setRoles(Collections.singleton(roleOne));
+
+        return user;
+    }
+
+    public static UserDTO getWriterUserDTO() {
+
+        UserDTO user = new UserDTO();
+        user.setName("John Writer");
 
         return user;
     }

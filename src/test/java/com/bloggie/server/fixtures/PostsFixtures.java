@@ -2,6 +2,7 @@ package com.bloggie.server.fixtures;
 
 import com.bloggie.server.api.v1.models.PostDTO;
 import com.bloggie.server.api.v1.models.PostExcerptDTO;
+import com.bloggie.server.api.v1.models.PostReaderDTO;
 import com.bloggie.server.domain.Post;
 
 import java.time.LocalDate;
@@ -132,6 +133,20 @@ public abstract class PostsFixtures {
         post.setSlug("test-post");
         post.setDatePublished(LocalDateTime.now());
         post.setAuthor(UsersFixtures.getWriterUser());
+
+        return post;
+    }
+
+    public static PostReaderDTO getSinglePostReader() {
+        PostReaderDTO post = new PostReaderDTO();
+
+        post.setDateUpdated( LocalDateTime.now());
+        post.setTitle("Test post title");
+        post.setContent("Test post content");
+        post.setReadTime(10);
+        post.setSlug("test-post");
+        post.setDatePublished(LocalDateTime.now());
+        post.setAuthor(UsersFixtures.getWriterUserDTO());
 
         return post;
     }

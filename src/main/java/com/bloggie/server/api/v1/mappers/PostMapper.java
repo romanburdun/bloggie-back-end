@@ -2,6 +2,7 @@ package com.bloggie.server.api.v1.mappers;
 
 import com.bloggie.server.api.v1.models.PostDTO;
 import com.bloggie.server.api.v1.models.PostExcerptDTO;
+import com.bloggie.server.api.v1.models.PostReaderDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
 import com.bloggie.server.domain.Post;
 import org.mapstruct.Mapper;
@@ -16,4 +17,6 @@ public interface PostMapper {
     PostDTO postToPostDto(Post post);
     PostExcerptDTO postToPostExcerptDto(Post post);
     Post postUpdateDtoToPost(PostUpdateDTO updateDTO);
+    PostReaderDTO postToPostReaderDTO(Post post);
+
 }

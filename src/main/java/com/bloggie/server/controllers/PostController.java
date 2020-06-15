@@ -2,6 +2,7 @@ package com.bloggie.server.controllers;
 
 import com.bloggie.server.api.v1.models.PostDTO;
 import com.bloggie.server.api.v1.models.PostExcerptDTO;
+import com.bloggie.server.api.v1.models.PostReaderDTO;
 import com.bloggie.server.api.v1.models.PostUpdateDTO;
 import com.bloggie.server.misc.PostsExcerptsPaged;
 import com.bloggie.server.misc.PostsPaged;
@@ -33,7 +34,7 @@ public class PostController {
     }
 
     @GetMapping("/{slug}")
-    private PostDTO getPostBySlug(@PathVariable String slug) {
+    private PostReaderDTO getPostBySlug(@PathVariable String slug) {
         return postsService.getPostBySlug(slug);
     }
 

@@ -2,10 +2,7 @@ package com.bloggie.server.services;
 
 import com.bloggie.server.api.v1.mappers.MetaMapper;
 import com.bloggie.server.api.v1.mappers.PostMapper;
-import com.bloggie.server.api.v1.models.MetaDTO;
-import com.bloggie.server.api.v1.models.PostDTO;
-import com.bloggie.server.api.v1.models.PostExcerptDTO;
-import com.bloggie.server.api.v1.models.PostUpdateDTO;
+import com.bloggie.server.api.v1.models.*;
 import com.bloggie.server.domain.*;
 import com.bloggie.server.exceptions.ApiRequestException;
 import com.bloggie.server.misc.PostsExcerptsPaged;
@@ -130,11 +127,11 @@ public class PostsServiceImpl implements PostsService {
     }
 
     @Override
-    public PostDTO getPostBySlug(String slug) {
+    public PostReaderDTO getPostBySlug(String slug) {
 
         Post post = postsRepository.findBySlug(slug)
                 .orElseThrow(() -> new ApiRequestException("Post not found", HttpStatus.NOT_FOUND));
-        return postMapper.postToPostDto(post);
+        return postMapper.postToPostReaderDTO(post);
     }
 
     @Override
