@@ -1,6 +1,7 @@
 package com.bloggie.server.services;
 
 import com.bloggie.server.api.v1.mappers.UserMapper;
+import com.bloggie.server.api.v1.models.SiteSettingsDTO;
 import com.bloggie.server.domain.Role;
 import com.bloggie.server.domain.RoleName;
 import com.bloggie.server.domain.User;
@@ -32,9 +33,16 @@ public class AuthServiceImpl implements AuthService {
     private JwtTokenProvider tokenProvider;
     private UsersRepository usersRepository;
     private RolesRepository rolesRepository;
+    private SiteSettingsService siteSettingsService;
 
     @Override
     public AuthToken register(SignupRequest request) {
+
+        SiteSettingsDTO settingsDTO = siteSettingsService.getSettings();
+
+        if(!settingsDTO.isRegistrationAllowed()) {
+            throw new ApiRequestException("Registration is disabled", HttpStatus.METHOD_NOT_ALLOWED);
+        }
 
         if (usersRepository.existsByEmail(request.getEmail())) {
             throw new ApiRequestException("User already exists", HttpStatus.CONFLICT);
