@@ -6,6 +6,7 @@ import com.bloggie.server.security.requests.SignupRequest;
 import com.bloggie.server.security.responses.AuthResponse;
 import com.bloggie.server.security.responses.AuthToken;
 import com.bloggie.server.services.AuthService;
+import com.bloggie.server.services.EmailService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 @CrossOrigin
@@ -24,6 +26,7 @@ import java.util.List;
 public class AuthController {
 
     private AuthService authService;
+    private EmailService emailService;
 
     @Autowired
     private Environment environment;
@@ -113,6 +116,11 @@ public class AuthController {
         response.setHeader("Access-Control-Allow-Origin", environment.getProperty("app.host"));
 
         return new AuthResponse(true);
+    }
+
+    @PostMapping("/password-reset-request/{email}")
+    public AuthResponse sendResetPasswordEmail(@PathVariable String email) throws IOException {
+        return emailService.resetPasswordEmail(email);
     }
 
 }
