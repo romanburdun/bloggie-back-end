@@ -1,5 +1,6 @@
 package com.bloggie.server.controllers;
 
+import com.bloggie.server.api.v1.models.PasswordResetDTO;
 import com.bloggie.server.exceptions.ApiRequestException;
 import com.bloggie.server.security.requests.AuthRequest;
 import com.bloggie.server.security.requests.SignupRequest;
@@ -121,6 +122,11 @@ public class AuthController {
     @PostMapping("/password-reset-request/{email}")
     public AuthResponse sendResetPasswordEmail(@PathVariable String email) throws IOException {
         return emailService.resetPasswordEmail(email);
+    }
+
+    @PostMapping("/password-reset/{token}")
+    public AuthResponse resetPassword(@PathVariable String token, @RequestBody PasswordResetDTO resetDTO) {
+        return authService.resetPassword(token, resetDTO);
     }
 
 }
