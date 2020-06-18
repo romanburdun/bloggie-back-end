@@ -3,6 +3,7 @@ package com.bloggie.server.bootstrap;
 import com.bloggie.server.domain.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,6 +56,9 @@ public abstract class BootstrapData {
         blogPage.setTitle("Blog page");
         blogPage.setContent("<div>Blog page content here...</div>");
         blogPage.setSlug("blog");
+        List<CustomField> fields = new ArrayList<>();
+        fields.add(getCustomField());
+        blogPage.setCustomFields(fields);
 
         Page aboutPage = new Page();
         aboutPage.setTitle("About page");
@@ -80,5 +84,15 @@ public abstract class BootstrapData {
         settings.setPostsPerPage(5);
         settings.setRegistrationAllowed(true);
         return settings;
+    }
+
+    public static CustomField getCustomField() {
+        CustomField field = new CustomField();
+        field.setId(1L);
+        field.setFieldName("blog_background");
+        field.setType(CustomFieldType.IMAGE);
+        field.setValue("blog_bg.webp");
+
+        return field;
     }
 }
