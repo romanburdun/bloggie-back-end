@@ -1,5 +1,6 @@
 package com.bloggie.server.services;
 
+import com.bloggie.server.api.v1.mappers.CustomFieldMapper;
 import com.bloggie.server.api.v1.mappers.MetaMapper;
 import com.bloggie.server.api.v1.mappers.PageMapper;
 import com.bloggie.server.api.v1.models.PageDTO;
@@ -8,6 +9,7 @@ import com.bloggie.server.domain.Meta;
 import com.bloggie.server.domain.Page;
 import com.bloggie.server.fixtures.MetaFixtures;
 import com.bloggie.server.fixtures.PagesFixtures;
+import com.bloggie.server.repositories.CustomFieldsRepository;
 import com.bloggie.server.repositories.MetasRepository;
 import com.bloggie.server.repositories.PagesRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,12 +33,15 @@ class PageServiceTest {
     private PagesRepository pagesRepository;
     @Mock
     private MetasRepository metasRepository;
+    @Mock
+    private CustomFieldsRepository customFieldsRepository;
     private MetaMapper metaMapper = MetaMapper.INSTANCE;
     private PageMapper pageMapper = PageMapper.INSTANCE;
+    private CustomFieldMapper customFieldMapper = CustomFieldMapper.INSTANCE;
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        pageService = new PageServiceImpl(pagesRepository, pageMapper, metasRepository,metaMapper);
+        pageService = new PageServiceImpl(pagesRepository, pageMapper, metasRepository,metaMapper, customFieldMapper, customFieldsRepository);
     }
 
     @Test

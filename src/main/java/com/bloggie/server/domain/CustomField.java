@@ -15,4 +15,24 @@ public class CustomField extends BaseEntity{
     private String value;
     @Enumerated(value = EnumType.STRING)
     private CustomFieldType type;
+
+
+    @Override
+    public boolean equals(Object obj) {
+        CustomField anotherField = (CustomField) obj;
+
+        if(!this.getFieldName().equals(anotherField.getFieldName())) {
+            return false;
+        }
+
+        if(!this.getValue().equals(anotherField.getValue())) {
+            return false;
+        }
+
+        if(!this.getType().equals(anotherField.getType())) {
+            return false;
+        }
+
+        return true;
+    }
 }

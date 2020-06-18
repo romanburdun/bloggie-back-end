@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class BootstrapData {
 
@@ -52,6 +53,7 @@ public abstract class BootstrapData {
     }
 
     public static List<Page> getPages() {
+
         Page blogPage = new Page();
         blogPage.setTitle("Blog page");
         blogPage.setContent("<div>Blog page content here...</div>");
@@ -94,5 +96,18 @@ public abstract class BootstrapData {
         field.setValue("blog_bg.webp");
 
         return field;
+    }
+
+    public static List<Meta> getMeta() {
+        Meta seoOne = new Meta();
+        seoOne.setSeoTitle("Page SEO Title one");
+        seoOne.setSeoDescription("Page SEO description one");
+       
+        Meta seoTwo = new Meta();
+
+        seoTwo.setSeoTitle("Page SEO Title two");
+        seoTwo.setSeoDescription("Page SEO description two");
+        
+        return Arrays.asList(seoOne, seoTwo);
     }
 }

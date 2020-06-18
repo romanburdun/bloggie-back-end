@@ -1,20 +1,26 @@
 package com.bloggie.server.services;
 
+import com.bloggie.server.api.v1.mappers.CustomFieldMapper;
 import com.bloggie.server.api.v1.mappers.MetaMapper;
 import com.bloggie.server.api.v1.mappers.PageMapper;
 import com.bloggie.server.api.v1.models.MetaDTO;
 import com.bloggie.server.api.v1.models.PageDTO;
 import com.bloggie.server.api.v1.models.PageUpdateDTO;
+import com.bloggie.server.domain.CustomField;
 import com.bloggie.server.domain.Meta;
 import com.bloggie.server.domain.Page;
 import com.bloggie.server.exceptions.ApiRequestException;
+import com.bloggie.server.repositories.CustomFieldsRepository;
 import com.bloggie.server.repositories.MetasRepository;
 import com.bloggie.server.repositories.PagesRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +31,8 @@ public class PageServiceImpl implements PageService {
     private final PageMapper pageMapper;
     private final MetasRepository metasRepository;
     private final MetaMapper metaMapper;
+    private final CustomFieldMapper customFieldMapper;
+    private final CustomFieldsRepository customFieldsRepository;
     @Override
     public PageDTO createPage(PageDTO pageDTO) {
 
@@ -42,6 +50,27 @@ public class PageServiceImpl implements PageService {
         Page newPage = pageMapper.pageDtoToPage(pageDTO);
         Meta pageMetaStored = metasRepository.save(pageMeta);
         newPage.setSeo(pageMetaStored);
+
+        if(pageDTO.getCustomFields() != null) {
+            List<CustomField> fieldsUpdate = pageDTO.getCustomFields()
+                    .stream()
+                    .map(fieldDTO -> customFieldMapper.customFieldDtoToCustomField(fieldDTO))
+                    .collect(Collectors.toList());
+
+            List<CustomField> pageFields = new ArrayList<>();
+            for (CustomField cField : fieldsUpdate) {
+
+                if(customFieldsRepository.existsByFieldName(cField.getFieldName())) {
+                    throw new ApiRequestException("Field with provided fieldName exists", HttpStatus.CONFLICT);
+                }
+
+                CustomField newField = customFieldsRepository.save(cField);
+                pageFields.add(newField);
+            }
+            newPage.setCustomFields(pageFields);
+
+        }
+
 
         return pageMapper.pageToPageDto(pagesRepository.save(newPage));
     }
@@ -99,6 +128,37 @@ public class PageServiceImpl implements PageService {
 
                 foundPage.setSeo(metasRepository.save(seo));
 
+
+            }
+
+
+        }
+
+
+        if(updateDTO.getCustomFields() != null) {
+            List<CustomField> fieldsUpdate = updateDTO.getCustomFields()
+                    .stream()
+                    .map(fieldDTO -> customFieldMapper.customFieldDtoToCustomField(fieldDTO))
+                    .collect(Collectors.toList());
+
+            for (CustomField cField : fieldsUpdate) {
+
+                Optional<CustomField> foundCfield = customFieldsRepository.findByFieldName(cField.getFieldName());
+
+                if(foundCfield.isPresent()) {
+
+                    if(!foundCfield.get().equals(cField)) {
+                        CustomField updatedField = foundCfield.get();
+                        updatedField.setValue(cField.getValue());
+                        updatedField.setType(cField.getType());
+
+                        customFieldsRepository.save(updatedField);
+
+                    }
+                } else {
+                    CustomField newField = customFieldsRepository.save(cField);
+                    foundPage.getCustomFields().add(newField);
+                }
 
             }
         }

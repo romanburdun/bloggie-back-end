@@ -20,7 +20,7 @@ public class PageController {
         return pageService.createPage(pageDTO);
     }
     @PutMapping("/{slug}")
-    private PageDTO updatePageBySlug(@PathVariable String slug, PageUpdateDTO updateDTO) {
+    private PageDTO updatePageBySlug(@PathVariable String slug, @RequestBody PageUpdateDTO updateDTO) {
         return pageService.updatePageBySlug(slug, updateDTO);
     }
 

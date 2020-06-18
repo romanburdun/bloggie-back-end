@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface CustomFieldsRepository extends JpaRepository<CustomField, Long> {
     Optional<CustomField> findByFieldName(String fieldName);
+    Boolean existsByFieldName(String fieldName);
 }
