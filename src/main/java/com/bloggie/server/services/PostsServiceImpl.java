@@ -45,17 +45,17 @@ public class PostsServiceImpl implements PostsService {
             throw new ApiRequestException("Bad request", HttpStatus.BAD_REQUEST);
         }
 
-        if(postDTO.getContent() == "" || postDTO.getContent() == "") {
+        if(postDTO.getTitle().equals("") || postDTO.getContent().equals("")) {
             throw new ApiRequestException("Bad request", HttpStatus.BAD_REQUEST);
         }
 
-        if(postDTO.getDatePublished() == null) {
+        if(postDTO.getDatePublished() == null || postDTO.getDatePublished().equals("")) {
             postDTO.setDatePublished(LocalDateTime.now());
         }
 
 
         String slug;
-        if (postDTO.getSlug() == null || postDTO.getSlug() == "") {
+        if (postDTO.getSlug() == null || postDTO.getSlug().equals("")) {
 
             slug = postDTO.getTitle().toLowerCase().replaceAll(" ", "-");
         } else {
@@ -166,18 +166,18 @@ public class PostsServiceImpl implements PostsService {
 
         if(!foundPost.equals(postMapper.postUpdateDtoToPost(update))) {
 
-            if(update.getTitle() != "" && update.getTitle() != null
+            if(!update.getTitle().equals("") && update.getTitle() != null
                     && !update.getTitle().equals(foundPost.getTitle())) {
                 foundPost.setTitle(update.getTitle());
             }
 
 
-            if(update.getContent() != null && update.getContent() != ""
+            if(!update.getContent().equals("") && update.getContent() != null
                     && !update.getContent().equals(foundPost.getContent())) {
                 foundPost.setContent(update.getContent());
             }
 
-            if(update.getSlug() != "" && update.getSlug() != null
+            if(!update.getSlug().equals("") && update.getSlug() != null
                     && !update.getSlug().equals(foundPost.getSlug())) {
                 String updatedSlug = update.getSlug().toLowerCase().replaceAll(" ", "-");
                 foundPost.setSlug(updatedSlug);

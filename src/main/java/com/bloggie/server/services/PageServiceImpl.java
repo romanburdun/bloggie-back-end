@@ -40,7 +40,7 @@ public class PageServiceImpl implements PageService {
             throw new ApiRequestException("Bad request", HttpStatus.BAD_REQUEST);
         }
 
-        if(pageDTO.getTitle() == "" || pageDTO.getContent() == "") {
+        if(pageDTO.getTitle().equals("") || pageDTO.getContent().equals("")) {
             throw new ApiRequestException("Bad request", HttpStatus.BAD_REQUEST);
         }
 

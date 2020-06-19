@@ -31,7 +31,7 @@ public class UsersServiceImpl implements UsersService {
             throw new ApiRequestException("Unauthenticated request", HttpStatus.UNAUTHORIZED);
         }
 
-        if(updateDTO.getCurrentPassword() == "" && updateDTO.getCurrentPassword() == null) {
+        if(updateDTO.getCurrentPassword().equals("") && updateDTO.getCurrentPassword() == null) {
             throw new ApiRequestException("Bad request", HttpStatus.BAD_REQUEST);
         }
 
@@ -39,15 +39,15 @@ public class UsersServiceImpl implements UsersService {
                 throw new ApiRequestException("Bad request", HttpStatus.UNAUTHORIZED);
         }
 
-        if(updateDTO.getNewPassword() != "" && updateDTO.getNewPassword() != null) {
+        if(!updateDTO.getNewPassword().equals("") && updateDTO.getNewPassword() != null) {
             user.setPassword(passwordEncoder.encode(updateDTO.getNewPassword()));
         }
 
-        if(updateDTO.getName() != "" && updateDTO.getName() != null) {
+        if(!updateDTO.getName().equals("") && updateDTO.getName() != null) {
             user.setName(updateDTO.getName());
         }
 
-        if(updateDTO.getEmail() != "" && updateDTO.getEmail() != null) {
+        if(!updateDTO.getEmail().equals("") && updateDTO.getEmail() != null) {
             String emailRegex = "^(.+)@(.+)$";
             Pattern pattern = Pattern.compile(emailRegex);
 
