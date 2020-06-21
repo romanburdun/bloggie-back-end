@@ -44,10 +44,12 @@ class PostsServiceTest {
     private AuthService authService;
     private PostMapper postMapper = PostMapper.INSTANCE;
     private MetaMapper metaMapper = MetaMapper.INSTANCE;
+    @Mock
+    private FilesService filesService;
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        postsService = new PostsServiceImpl(postsRepository, postMapper,authService, metaMapper, metasRepository);
+        postsService = new PostsServiceImpl(postsRepository, postMapper,authService, metaMapper, metasRepository, filesService);
     }
 
 

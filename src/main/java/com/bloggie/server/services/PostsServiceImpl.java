@@ -36,7 +36,8 @@ public class PostsServiceImpl implements PostsService {
     private final AuthService authService;
     private final MetaMapper metaMapper;
     private final MetasRepository metasRepository;
-    private final String COVERS_PATH = "images/covers";
+    private final String COVERS_PATH = "media/image";
+    private final FilesService filesService;
 
     @Override
     public PostDTO createPost(PostDTO postDTO) {
@@ -250,19 +251,9 @@ public class PostsServiceImpl implements PostsService {
         Post post = postsRepository.findBySlug(slug)
                 .orElseThrow(()-> new ApiRequestException("Post not found", HttpStatus.NOT_FOUND));
 
-        UrlResource resource= null;
 
 
-        Path filePath = Path.of(COVERS_PATH + "/" + post.getCover());
-
-        try {
-            resource = new UrlResource(filePath.toUri());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-
-        return resource;
+        return filesService.getFile(post.getCover(), CustomFieldType.IMAGE);
     }
 
     @Override

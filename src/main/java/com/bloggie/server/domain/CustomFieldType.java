@@ -4,6 +4,8 @@ public enum  CustomFieldType {
     URL,
     EMAIL,
     IMAGE,
+    VIDEO,
+    AUDIO,
     TEXT,
     DATE,
     TIME,
