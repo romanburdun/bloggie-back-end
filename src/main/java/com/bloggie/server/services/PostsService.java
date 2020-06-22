@@ -18,7 +18,6 @@ public interface PostsService {
     PostDTO deletePostBySlug(String slug);
     PostDTO updatePostBySlug(String slug, PostUpdateDTO update);
     PostsExcerptsPaged getPostsExcerpts(int page, int posts);
-    Resource getPostCover(String fileName);
     List<PostExcerptDTO> searchPostsByTitle(String searchTitle);
     List<PostExcerptDTO> searchPostsByContent(String searchContent);
 

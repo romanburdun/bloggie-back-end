@@ -63,9 +63,4 @@ public class PostController {
     private PostDTO deletePost(@PathVariable String slug) {
         return postsService.deletePostBySlug(slug);
     }
-
-    @GetMapping(value= "/covers/{slug}",produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    private Resource getPostCover(@PathVariable String slug) {
-        return postsService.getPostCover(slug);
-    }
 }

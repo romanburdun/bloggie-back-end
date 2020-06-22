@@ -33,8 +33,6 @@ public class PostsServiceImpl implements PostsService {
     private final AuthService authService;
     private final MetaMapper metaMapper;
     private final MetasRepository metasRepository;
-    private final String COVERS_PATH = "media/image";
-    private final MediaService mediaService;
 
     @Override
     public PostDTO createPost(PostDTO postDTO) {
@@ -62,11 +60,7 @@ public class PostsServiceImpl implements PostsService {
 
         postDTO.setSlug(slug);
 
-
-
-        if(postDTO.getCover().startsWith("data:")) {
-            postDTO.setCover(saveImage(postDTO.getCover(), slug, COVERS_PATH));
-        } else {
+        if(postDTO.getCover() == null) {
             postDTO.setCover("");
         }
 
@@ -138,12 +132,6 @@ public class PostsServiceImpl implements PostsService {
         Post post =  postsRepository.findBySlug(slug)
                 .orElseThrow(()-> new ApiRequestException("Post not found", HttpStatus.NOT_FOUND));
 
-
-        File deleteCover = new File(COVERS_PATH + "/" + post.getCover());
-
-        if(deleteCover.exists()) {
-            deleteCover.delete();
-        }
         postsRepository.deleteById(post.getId());
 
         return postMapper.postToPostDto(post);
@@ -188,11 +176,7 @@ public class PostsServiceImpl implements PostsService {
             }
 
             if(update.getCover() != null && !update.getCover().equals(foundPost.getCover())) {
-                if(update.getCover().startsWith("data:")) {
-                    foundPost.setCover(saveImage(update.getCover(), slug, COVERS_PATH));
-                } else {
-                    foundPost.setCover("");
-                }
+                foundPost.setCover(update.getCover());
             }
 
             if(update.getReadTime() != 0) {
@@ -243,17 +227,6 @@ public class PostsServiceImpl implements PostsService {
     }
 
     @Override
-    public Resource getPostCover(String slug) {
-
-        Post post = postsRepository.findBySlug(slug)
-                .orElseThrow(()-> new ApiRequestException("Post not found", HttpStatus.NOT_FOUND));
-
-
-
-        return mediaService.getFile(post.getCover());
-    }
-
-    @Override
     public List<PostExcerptDTO> searchPostsByTitle(String searchTitle) {
 
 
@@ -301,39 +274,6 @@ public class PostsServiceImpl implements PostsService {
 
     }
 
-
-    /// Helper methods
-
-    public String saveImage(String imageString, String fileName, String path) {
-        String base64Image = imageString.split(",")[1];
-
-        // Extracting extension from base64 string
-        // First split gets data:[mime-type]
-        // Second split gets extension
-        String extension = imageString.split(";")[0].split("/")[1];
-
-        String file = "";
-        File directory = new File(path);
-
-        if(!directory.exists()) {
-            directory.mkdirs();
-        }
-
-        byte[] imageBytes = Base64.decodeBase64(base64Image);
-
-
-        try {
-
-           file = fileName + "." + extension;
-
-            FileOutputStream fstream = new FileOutputStream(new File(path + "/" + file));
-            fstream.write(imageBytes);
-            fstream.close();
-        } catch (Exception ex) {
-            System.out.println(ex);
-        }
-        return file;
-    }
 
     public int getTotalPages(int posts) {
         return (int) Math.ceil((double) postsRepository.count() / posts);
