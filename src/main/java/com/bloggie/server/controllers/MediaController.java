@@ -1,6 +1,6 @@
 package com.bloggie.server.controllers;
 
-import com.bloggie.server.services.FilesService;
+import com.bloggie.server.services.MediaService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,11 +12,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/v1/media")
 @AllArgsConstructor
 public class MediaController {
-    private final FilesService filesService;
+    private final MediaService mediaService;
 
     @PostMapping("upload")
     public String uploadFile(@RequestParam("file") MultipartFile file) {
-        return filesService.uploadFile(file);
+        return mediaService.uploadFile(file);
     }
 
 }

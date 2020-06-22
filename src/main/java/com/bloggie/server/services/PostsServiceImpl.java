@@ -13,15 +13,12 @@ import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +34,7 @@ public class PostsServiceImpl implements PostsService {
     private final MetaMapper metaMapper;
     private final MetasRepository metasRepository;
     private final String COVERS_PATH = "media/image";
-    private final FilesService filesService;
+    private final MediaService mediaService;
 
     @Override
     public PostDTO createPost(PostDTO postDTO) {
@@ -253,7 +250,7 @@ public class PostsServiceImpl implements PostsService {
 
 
 
-        return filesService.getFile(post.getCover(), CustomFieldType.IMAGE);
+        return mediaService.getFile(post.getCover(), CustomFieldType.IMAGE);
     }
 
     @Override

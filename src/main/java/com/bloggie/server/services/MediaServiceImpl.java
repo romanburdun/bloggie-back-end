@@ -18,7 +18,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 @Service
-public class FilesServiceImpl implements FilesService {
+public class MediaServiceImpl implements MediaService {
     @Override
     public String uploadFile(MultipartFile file) {
 
