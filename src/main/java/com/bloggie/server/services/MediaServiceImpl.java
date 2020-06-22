@@ -2,12 +2,10 @@ package com.bloggie.server.services;
 
 import com.bloggie.server.api.v1.mappers.MediaMapper;
 import com.bloggie.server.api.v1.models.MediaDTO;
-import com.bloggie.server.domain.CustomFieldType;
 import com.bloggie.server.domain.Media;
 import com.bloggie.server.exceptions.ApiRequestException;
 import com.bloggie.server.repositories.MediaRepository;
 import com.bloggie.server.security.responses.AuthResponse;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
