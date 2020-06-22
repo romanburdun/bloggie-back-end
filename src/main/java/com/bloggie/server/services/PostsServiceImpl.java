@@ -250,7 +250,7 @@ public class PostsServiceImpl implements PostsService {
 
 
 
-        return mediaService.getFile(post.getCover(), CustomFieldType.IMAGE);
+        return mediaService.getFile(post.getCover());
     }
 
     @Override
