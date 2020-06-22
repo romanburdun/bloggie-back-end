@@ -11,6 +11,6 @@ import javax.persistence.Entity;
 public class Media extends BaseEntity{
     private String contentType;
     private String fileName;
-    private String size;
+    private long size;
     private String url;
 }
