@@ -80,6 +80,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/v1/media/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/posts").hasAnyRole("ADMINISTRATOR", "WRITER")
                 .antMatchers(HttpMethod.POST, "/api/v1/media/***").hasAnyRole("ADMINISTRATOR", "WRITER")
+                .antMatchers(HttpMethod.DELETE, "/api/v1/media/***").hasAnyRole("ADMINISTRATOR", "WRITER")
                 .antMatchers(HttpMethod.GET, "/api/v1/media").hasAnyRole("ADMINISTRATOR", "WRITER")
                 .antMatchers(HttpMethod.PUT, "/api/v1/posts/**").hasAnyRole("ADMINISTRATOR", "WRITER")
                 .antMatchers(HttpMethod.DELETE, "/api/v1/posts/**").hasAnyRole("ADMINISTRATOR", "WRITER")

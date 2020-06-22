@@ -1,6 +1,7 @@
 package com.bloggie.server.controllers;
 
 import com.bloggie.server.api.v1.models.MediaDTO;
+import com.bloggie.server.security.responses.AuthResponse;
 import com.bloggie.server.services.MediaService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -22,5 +23,10 @@ public class MediaController {
     @GetMapping(value="/{fileName}",produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public Resource getFile(@PathVariable String fileName) {
         return mediaService.getFile(fileName);
+    }
+
+    @DeleteMapping("/{fileName}")
+    public AuthResponse deleteFile(@PathVariable String fileName) {
+        return mediaService.deleteFile(fileName);
     }
 }

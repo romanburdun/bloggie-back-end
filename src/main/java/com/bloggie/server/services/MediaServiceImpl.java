@@ -6,6 +6,7 @@ import com.bloggie.server.domain.CustomFieldType;
 import com.bloggie.server.domain.Media;
 import com.bloggie.server.exceptions.ApiRequestException;
 import com.bloggie.server.repositories.MediaRepository;
+import com.bloggie.server.security.responses.AuthResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -116,5 +117,41 @@ public class MediaServiceImpl implements MediaService {
         }
 
         return resource;
+    }
+
+    @Override
+    public AuthResponse deleteFile(String fileName) {
+
+        Media foundMedia = mediaRepository.findByFileName(fileName)
+                .orElseThrow(()-> new ApiRequestException("File not found", HttpStatus.NOT_FOUND));
+
+        Path filePath = null;
+        String type = foundMedia.getContentType().split("/")[0];
+        switch (type) {
+            case "image":
+                filePath = Path.of( "./media/image/" + fileName);
+                break;
+            case "video":
+                filePath = Path.of( "./media/video/" + fileName);
+                break;
+            case "audio":
+                filePath = Path.of( "./media/audio/" + fileName);
+                break;
+            case "application":
+                filePath = Path.of( "./media/document/" + fileName);
+                break;
+            default:
+                throw new ApiRequestException("Unsupported file type", HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+
+        File deleteFile = new File(filePath.toString());
+
+        if(deleteFile.exists()) {
+            deleteFile.delete();
+        }
+
+        mediaRepository.delete(foundMedia);
+        return new AuthResponse(true);
     }
 }
