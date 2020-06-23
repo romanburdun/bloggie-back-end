@@ -18,6 +18,7 @@ public interface PostsRepository extends PagingAndSortingRepository<Post, Long> 
     Page<Post> findAllByAuthor(User author, Pageable pageRequest);
     List<Post> findAllByTitleIgnoreCaseContaining( String searchTitle);
     List<Post> findAllByContentIgnoreCaseContaining( String searchContent);
+    List<Post> findAllByMediaFileName(String fileName);
 
 
 }

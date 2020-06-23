@@ -4,7 +4,10 @@ import com.bloggie.server.api.v1.mappers.MediaMapper;
 import com.bloggie.server.api.v1.models.MediaDTO;
 import com.bloggie.server.domain.Media;
 import com.bloggie.server.exceptions.ApiRequestException;
+import com.bloggie.server.repositories.CustomFieldsRepository;
 import com.bloggie.server.repositories.MediaRepository;
+import com.bloggie.server.repositories.PagesRepository;
+import com.bloggie.server.repositories.PostsRepository;
 import com.bloggie.server.security.responses.AuthResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -27,13 +30,24 @@ import java.nio.file.StandardCopyOption;
 public class MediaServiceImpl implements MediaService {
     private final MediaRepository mediaRepository;
     private final MediaMapper mediaMapper;
+    private final PostsRepository postsRepository;
+    private final PagesRepository pagesRepository;
+    private final CustomFieldsRepository customFieldsRepository;
 
     @Value("${app.host}")
     private String domain;
 
-    public MediaServiceImpl(MediaRepository mediaRepository, MediaMapper mediaMapper) {
+    public MediaServiceImpl(MediaRepository mediaRepository,
+                            MediaMapper mediaMapper,
+                            PostsRepository postsRepository,
+                            PagesRepository pagesRepository,
+                            CustomFieldsRepository customFieldsRepository
+    ) {
         this.mediaRepository = mediaRepository;
         this.mediaMapper = mediaMapper;
+        this.postsRepository = postsRepository;
+        this.pagesRepository = pagesRepository;
+        this.customFieldsRepository = customFieldsRepository;
     }
 
 
@@ -143,13 +157,22 @@ public class MediaServiceImpl implements MediaService {
 
         }
 
-        File deleteFile = new File(filePath.toString());
+        boolean isNotInPosts = postsRepository.findAllByMediaFileName(fileName).isEmpty();
+        boolean isNotInPages = pagesRepository.findAllByMediaFileName(fileName).isEmpty();
+        boolean isNotInCustomFields = customFieldsRepository.findAllByValue(foundMedia.getUrl()).isEmpty();
 
-        if(deleteFile.exists()) {
-            deleteFile.delete();
+        if(isNotInPosts && isNotInPages && isNotInCustomFields) {
+            File deleteFile = new File(filePath.toString());
+
+            if(deleteFile.exists()) {
+                deleteFile.delete();
+            }
+
+            mediaRepository.delete(foundMedia);
+        } else {
+            throw new ApiRequestException("File cannot be deleted because it is used somewhere in a website.", HttpStatus.EXPECTATION_FAILED);
         }
 
-        mediaRepository.delete(foundMedia);
         return new AuthResponse(true);
     }
 }

@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class BootstrapData {
 
@@ -109,5 +108,21 @@ public abstract class BootstrapData {
         seoTwo.setSeoDescription("Page SEO description two");
         
         return Arrays.asList(seoOne, seoTwo);
+    }
+
+    public static List<Media> getMedia() {
+        Media mediaOne = new Media();
+        mediaOne.setContentType("video/mp4");
+        mediaOne.setFileName("test.mp4");
+        mediaOne.setSize(3820702);
+        mediaOne.setUrl("http://localhost:8080/api/v1/media/test.mp4");
+
+        Media mediaTwo = new Media();
+        mediaTwo.setFileName("test2.mp4");
+        mediaTwo.setContentType("video/mp4");
+        mediaTwo.setUrl("http://localhost:8080/api/v1/media/test2.mp4");
+        mediaTwo.setSize(3820702);
+
+        return Arrays.asList(mediaOne, mediaTwo);
     }
 }
