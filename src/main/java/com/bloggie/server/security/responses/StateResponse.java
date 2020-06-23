@@ -4,6 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 @AllArgsConstructor
 @Getter
-public class AuthResponse {
+public class StateResponse {
     private boolean success;
 }

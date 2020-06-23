@@ -4,7 +4,7 @@ import com.bloggie.server.api.v1.models.PasswordResetDTO;
 import com.bloggie.server.exceptions.ApiRequestException;
 import com.bloggie.server.security.requests.AuthRequest;
 import com.bloggie.server.security.requests.SignupRequest;
-import com.bloggie.server.security.responses.AuthResponse;
+import com.bloggie.server.security.responses.StateResponse;
 import com.bloggie.server.security.responses.AuthToken;
 import com.bloggie.server.services.AuthService;
 import com.bloggie.server.services.EmailService;
@@ -33,7 +33,7 @@ public class AuthController {
     private Environment environment;
 
     @PostMapping("/register")
-    private AuthResponse register(@RequestBody SignupRequest request, HttpServletResponse response) {
+    private StateResponse register(@RequestBody SignupRequest request, HttpServletResponse response) {
 
         AuthToken token = authService.register(request);
 
@@ -59,11 +59,11 @@ public class AuthController {
         response.setHeader("Access-Control-Allow-Origin", environment.getProperty("app.host"));
 
 
-        return new AuthResponse(true);
+        return new StateResponse(true);
     }
 
     @PostMapping("/login")
-    private AuthResponse login(@RequestBody AuthRequest request, HttpServletResponse response) {
+    private StateResponse login(@RequestBody AuthRequest request, HttpServletResponse response) {
 
         AuthToken token = authService.login(request);
 
@@ -90,11 +90,11 @@ public class AuthController {
         response.addHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Origin", environment.getProperty("app.host"));
 
-        return new AuthResponse(true);
+        return new StateResponse(true);
     }
 
     @PostMapping("/logout")
-    private AuthResponse logout(HttpServletResponse response) {
+    private StateResponse logout(HttpServletResponse response) {
 
 
         String[] activeProfiles = environment.getActiveProfiles();
@@ -116,16 +116,16 @@ public class AuthController {
         response.addHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Origin", environment.getProperty("app.host"));
 
-        return new AuthResponse(true);
+        return new StateResponse(true);
     }
 
     @PostMapping("/password-reset-request/{email}")
-    public AuthResponse sendResetPasswordEmail(@PathVariable String email) throws IOException {
+    public StateResponse sendResetPasswordEmail(@PathVariable String email) throws IOException {
         return emailService.resetPasswordEmail(email);
     }
 
     @PostMapping("/password-reset/{token}")
-    public AuthResponse resetPassword(@PathVariable String token, @RequestBody PasswordResetDTO resetDTO) {
+    public StateResponse resetPassword(@PathVariable String token, @RequestBody PasswordResetDTO resetDTO) {
         return authService.resetPassword(token, resetDTO);
     }
 

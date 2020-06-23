@@ -8,7 +8,7 @@ import com.bloggie.server.repositories.CustomFieldsRepository;
 import com.bloggie.server.repositories.MediaRepository;
 import com.bloggie.server.repositories.PagesRepository;
 import com.bloggie.server.repositories.PostsRepository;
-import com.bloggie.server.security.responses.AuthResponse;
+import com.bloggie.server.security.responses.StateResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -132,7 +132,7 @@ public class MediaServiceImpl implements MediaService {
     }
 
     @Override
-    public AuthResponse deleteFile(String fileName) {
+    public StateResponse deleteFile(String fileName) {
 
         Media foundMedia = mediaRepository.findByFileName(fileName)
                 .orElseThrow(()-> new ApiRequestException("File not found", HttpStatus.NOT_FOUND));
@@ -173,6 +173,6 @@ public class MediaServiceImpl implements MediaService {
             throw new ApiRequestException("File cannot be deleted because it is used somewhere in a website.", HttpStatus.EXPECTATION_FAILED);
         }
 
-        return new AuthResponse(true);
+        return new StateResponse(true);
     }
 }

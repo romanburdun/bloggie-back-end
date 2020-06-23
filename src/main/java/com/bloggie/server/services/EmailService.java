@@ -1,9 +1,9 @@
 package com.bloggie.server.services;
 
-import com.bloggie.server.security.responses.AuthResponse;
+import com.bloggie.server.security.responses.StateResponse;
 
 import java.io.IOException;
 
 public interface EmailService {
-    AuthResponse resetPasswordEmail(String email) throws IOException;
+    StateResponse resetPasswordEmail(String email) throws IOException;
 }

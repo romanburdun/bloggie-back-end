@@ -14,7 +14,7 @@ import com.bloggie.server.security.jwt.JwtTokenProvider;
 import com.bloggie.server.security.principals.UserPrincipal;
 import com.bloggie.server.security.requests.AuthRequest;
 import com.bloggie.server.security.requests.SignupRequest;
-import com.bloggie.server.security.responses.AuthResponse;
+import com.bloggie.server.security.responses.StateResponse;
 import com.bloggie.server.security.responses.AuthToken;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -108,7 +108,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse resetPassword(String resetToken, PasswordResetDTO resetDTO) {
+    public StateResponse resetPassword(String resetToken, PasswordResetDTO resetDTO) {
 
         PasswordResetToken prt = prtRepository.findByToken(resetToken)
                 .orElseThrow(()-> new ApiRequestException("Reset token not exists", HttpStatus.NOT_FOUND));
@@ -129,6 +129,6 @@ public class AuthServiceImpl implements AuthService {
 
         prtRepository.delete(prt);
 
-        return new AuthResponse(true);
+        return new StateResponse(true);
     }
 }

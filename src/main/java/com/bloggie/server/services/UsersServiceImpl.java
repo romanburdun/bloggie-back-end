@@ -4,7 +4,7 @@ import com.bloggie.server.api.v1.models.UserUpdateDTO;
 import com.bloggie.server.domain.User;
 import com.bloggie.server.exceptions.ApiRequestException;
 import com.bloggie.server.repositories.UsersRepository;
-import com.bloggie.server.security.responses.AuthResponse;
+import com.bloggie.server.security.responses.StateResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,7 +22,7 @@ public class UsersServiceImpl implements UsersService {
     private final UsersRepository usersRepository;
 
     @Override
-    public AuthResponse updateUserProfile(UserUpdateDTO updateDTO) {
+    public StateResponse updateUserProfile(UserUpdateDTO updateDTO) {
 
         User user = authService.getRequestUser()
                 .orElseThrow(()-> new ApiRequestException("Unauthenticated request", HttpStatus.UNAUTHORIZED));
@@ -65,6 +65,6 @@ public class UsersServiceImpl implements UsersService {
 
         usersRepository.save(user);
 
-        return new AuthResponse(true);
+        return new StateResponse(true);
     }
 }

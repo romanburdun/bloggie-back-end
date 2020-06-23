@@ -3,7 +3,7 @@ package com.bloggie.server.services;
 import com.bloggie.server.domain.PasswordResetToken;
 import com.bloggie.server.repositories.PrtRepository;
 import com.bloggie.server.repositories.UsersRepository;
-import com.bloggie.server.security.responses.AuthResponse;
+import com.bloggie.server.security.responses.StateResponse;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
@@ -37,7 +37,7 @@ public class EmailServiceImpl implements EmailService {
 
 
     @Override
-    public AuthResponse resetPasswordEmail(String email) throws IOException {
+    public StateResponse resetPasswordEmail(String email) throws IOException {
 
         if(usersRepository.existsByEmail(email)) {
 
@@ -77,6 +77,6 @@ public class EmailServiceImpl implements EmailService {
         }
 
 
-        return new AuthResponse(true);
+        return new StateResponse(true);
     }
 }

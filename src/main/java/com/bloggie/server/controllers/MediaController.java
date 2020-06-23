@@ -1,7 +1,7 @@
 package com.bloggie.server.controllers;
 
 import com.bloggie.server.api.v1.models.MediaDTO;
-import com.bloggie.server.security.responses.AuthResponse;
+import com.bloggie.server.security.responses.StateResponse;
 import com.bloggie.server.services.MediaService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -31,7 +31,7 @@ public class MediaController {
     }
 
     @DeleteMapping("/{fileName}")
-    public AuthResponse deleteFile(@PathVariable String fileName) {
+    public StateResponse deleteFile(@PathVariable String fileName) {
         return mediaService.deleteFile(fileName);
     }
 }
