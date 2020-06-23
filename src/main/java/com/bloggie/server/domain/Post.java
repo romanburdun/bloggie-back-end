@@ -2,9 +2,11 @@ package com.bloggie.server.domain;
 
 import lombok.Getter;
 import lombok.Setter;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Setter
@@ -22,6 +24,11 @@ public class Post extends BaseEntity {
     private Meta seo;
     @OneToOne
     private User author;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "post_media",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "media_id"))
+    Set<Media> media;
 
 
     @Override

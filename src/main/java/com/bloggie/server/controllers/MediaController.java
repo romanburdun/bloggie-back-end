@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/api/v1/media")
 @AllArgsConstructor
@@ -21,8 +23,11 @@ public class MediaController {
     }
 
     @GetMapping(value="/{fileName}",produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public Resource getFile(@PathVariable String fileName) {
-        return mediaService.getFile(fileName);
+    public Resource getFile(@PathVariable String fileName,  HttpServletResponse response) {
+
+        Resource resource = mediaService.getFile(fileName);
+        response.setHeader("Content-Disposition", "attachment; filename=" +resource.getFilename());
+        return resource;
     }
 
     @DeleteMapping("/{fileName}")

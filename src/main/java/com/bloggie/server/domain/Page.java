@@ -3,10 +3,9 @@ package com.bloggie.server.domain;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Setter
@@ -20,6 +19,11 @@ public class Page extends BaseEntity {
     private Meta seo;
     @OneToMany
     List<CustomField> customFields;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "page_media",
+            joinColumns = @JoinColumn(name = "page_id"),
+            inverseJoinColumns = @JoinColumn(name = "media_id"))
+    Set<Media> media;
 
 
     @Override
