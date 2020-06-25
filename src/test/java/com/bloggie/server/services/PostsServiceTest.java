@@ -1,5 +1,6 @@
 package com.bloggie.server.services;
 
+import com.bloggie.server.api.v1.mappers.MediaMapper;
 import com.bloggie.server.api.v1.mappers.MetaMapper;
 import com.bloggie.server.api.v1.mappers.PostMapper;
 import com.bloggie.server.api.v1.models.PostDTO;
@@ -14,6 +15,7 @@ import com.bloggie.server.fixtures.PostsFixtures;
 import com.bloggie.server.fixtures.UsersFixtures;
 import com.bloggie.server.misc.PostsExcerptsPaged;
 import com.bloggie.server.misc.PostsPaged;
+import com.bloggie.server.repositories.MediaRepository;
 import com.bloggie.server.repositories.MetasRepository;
 import com.bloggie.server.repositories.PostsRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,15 +41,25 @@ class PostsServiceTest {
     private PostsRepository postsRepository;
     @Mock
     private MetasRepository metasRepository;
-
+    @Mock
+    private MediaRepository mediaRepository;
     @Mock
     private AuthService authService;
+
     private PostMapper postMapper = PostMapper.INSTANCE;
     private MetaMapper metaMapper = MetaMapper.INSTANCE;
+    private MediaMapper mediaMapper = MediaMapper.INSTANCE;
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        postsService = new PostsServiceImpl(postsRepository, postMapper,authService, metaMapper, metasRepository);
+        postsService = new PostsServiceImpl(
+                postsRepository,
+                postMapper,
+                authService,
+                metaMapper,
+                metasRepository,
+                mediaMapper,
+                mediaRepository);
     }
 
 

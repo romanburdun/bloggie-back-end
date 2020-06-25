@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -18,4 +19,5 @@ public class PostUpdateDTO {
     private String slug;
     private int readTime;
     private MetaDTO seo;
+    private Set<MediaDTO> media;
 }

@@ -5,6 +5,7 @@ import lombok.Setter;
 
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -21,4 +22,5 @@ public class PostDTO {
     private String slug;
     private UserDTO author;
     private MetaDTO seo;
+    private Set<MediaDTO> media;
 }

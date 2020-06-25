@@ -1,26 +1,27 @@
 package com.bloggie.server.services;
 
 import com.bloggie.server.api.v1.mappers.CustomFieldMapper;
+import com.bloggie.server.api.v1.mappers.MediaMapper;
 import com.bloggie.server.api.v1.mappers.MetaMapper;
 import com.bloggie.server.api.v1.mappers.PageMapper;
+import com.bloggie.server.api.v1.models.MediaDTO;
 import com.bloggie.server.api.v1.models.MetaDTO;
 import com.bloggie.server.api.v1.models.PageDTO;
 import com.bloggie.server.api.v1.models.PageUpdateDTO;
 import com.bloggie.server.domain.CustomField;
+import com.bloggie.server.domain.Media;
 import com.bloggie.server.domain.Meta;
 import com.bloggie.server.domain.Page;
 import com.bloggie.server.exceptions.ApiRequestException;
 import com.bloggie.server.repositories.CustomFieldsRepository;
+import com.bloggie.server.repositories.MediaRepository;
 import com.bloggie.server.repositories.MetasRepository;
 import com.bloggie.server.repositories.PagesRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +34,8 @@ public class PageServiceImpl implements PageService {
     private final MetaMapper metaMapper;
     private final CustomFieldMapper customFieldMapper;
     private final CustomFieldsRepository customFieldsRepository;
+    private final MediaMapper mediaMapper;
+    private final MediaRepository mediaRepository;
     @Override
     public PageDTO createPage(PageDTO pageDTO) {
 
@@ -69,6 +72,19 @@ public class PageServiceImpl implements PageService {
             }
             newPage.setCustomFields(pageFields);
 
+        }
+
+        if( pageDTO.getMedia() != null && pageDTO.getMedia().size() != 0) {
+
+            Set<Media> pageMedia = new HashSet<>();
+
+            for (MediaDTO mediaDTO : pageDTO.getMedia()) {
+                Media foundMedia = mediaRepository.findByFileName(mediaDTO.getFileName())
+                        .orElseThrow(()-> new ApiRequestException("Media data not found", HttpStatus.NOT_FOUND));
+             pageMedia.add(foundMedia);
+            }
+
+            newPage.setMedia(pageMedia);
         }
 
 
@@ -131,11 +147,10 @@ public class PageServiceImpl implements PageService {
 
             }
 
-
         }
 
 
-        if(updateDTO.getCustomFields() != null) {
+        if(updateDTO.getCustomFields() != null && updateDTO.getCustomFields().size() != 0) {
             List<CustomField> fieldsUpdate = updateDTO.getCustomFields()
                     .stream()
                     .map(fieldDTO -> customFieldMapper.customFieldDtoToCustomField(fieldDTO))
@@ -161,6 +176,20 @@ public class PageServiceImpl implements PageService {
                 }
 
             }
+        }
+
+
+        if( updateDTO.getMedia() != null && updateDTO.getMedia().size() != 0) {
+
+            Set<Media> pageMedia = new HashSet<>();
+
+            for (MediaDTO mediaDTO : updateDTO.getMedia()) {
+                Media foundMedia = mediaRepository.findByFileName(mediaDTO.getFileName())
+                        .orElseThrow(()-> new ApiRequestException("Media data not found", HttpStatus.NOT_FOUND));
+                pageMedia.add(foundMedia);
+            }
+
+            foundPage.setMedia(pageMedia);
         }
 
         return pageMapper.pageToPageDto(pagesRepository.save(foundPage));

@@ -1,5 +1,6 @@
 package com.bloggie.server.services;
 
+import com.bloggie.server.api.v1.mappers.MediaMapper;
 import com.bloggie.server.api.v1.mappers.MetaMapper;
 import com.bloggie.server.api.v1.mappers.PostMapper;
 import com.bloggie.server.api.v1.models.*;
@@ -7,6 +8,7 @@ import com.bloggie.server.domain.*;
 import com.bloggie.server.exceptions.ApiRequestException;
 import com.bloggie.server.misc.PostsExcerptsPaged;
 import com.bloggie.server.misc.PostsPaged;
+import com.bloggie.server.repositories.MediaRepository;
 import com.bloggie.server.repositories.MetasRepository;
 import com.bloggie.server.repositories.PostsRepository;
 import lombok.AllArgsConstructor;
@@ -21,7 +23,9 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +37,8 @@ public class PostsServiceImpl implements PostsService {
     private final AuthService authService;
     private final MetaMapper metaMapper;
     private final MetasRepository metasRepository;
+    private final MediaMapper mediaMapper;
+    private final MediaRepository mediaRepository;
 
     @Override
     public PostDTO createPost(PostDTO postDTO) {
@@ -72,6 +78,20 @@ public class PostsServiceImpl implements PostsService {
         User user = authService.getRequestUser().orElseThrow(() -> new ApiRequestException("Not Authorized", HttpStatus.UNAUTHORIZED));
 
         newPost.setAuthor(user);
+
+
+        if( postDTO.getMedia() != null && postDTO.getMedia().size() != 0) {
+
+            Set<Media> pageMedia = new HashSet<>();
+
+            for (MediaDTO mediaDTO : postDTO.getMedia()) {
+                Media foundMedia = mediaRepository.findByFileName(mediaDTO.getFileName())
+                        .orElseThrow(()-> new ApiRequestException("Media data not found", HttpStatus.NOT_FOUND));
+                pageMedia.add(foundMedia);
+            }
+
+            newPost.setMedia(pageMedia);
+        }
 
         Post createdPost = postsRepository.save(newPost);
 
@@ -197,10 +217,21 @@ public class PostsServiceImpl implements PostsService {
                 foundPost.setSeo(metasRepository.save(seo));
             }
 
-            return postMapper.postToPostDto(postsRepository.save(foundPost));
         }
 
-        return postMapper.postToPostDto(foundPost);
+        if( update.getMedia() != null && update.getMedia().size() != 0) {
+
+            Set<Media> pageMedia = new HashSet<>();
+
+            for (MediaDTO mediaDTO : update.getMedia()) {
+                Media foundMedia = mediaRepository.findByFileName(mediaDTO.getFileName())
+                        .orElseThrow(()-> new ApiRequestException("Media data not found", HttpStatus.NOT_FOUND));
+                pageMedia.add(foundMedia);
+            }
+
+            foundPost.setMedia(pageMedia);
+        }
+        return postMapper.postToPostDto(postsRepository.save(foundPost));
     }
 
     @Override
