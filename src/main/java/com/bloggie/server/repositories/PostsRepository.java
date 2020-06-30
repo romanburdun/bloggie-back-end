@@ -13,8 +13,8 @@ import java.util.Optional;
 
 @Repository
 public interface PostsRepository extends PagingAndSortingRepository<Post, Long> {
-    Optional<Post> findBySlug(String slug);
-    Page<Post> findAllByDatePublishedBefore(LocalDateTime date, Pageable pageRequest);
+    Optional<Post> findBySlugAndDraftIsFalse(String slug);
+    Page<Post> findAllByDatePublishedBeforeAndDraftIsFalse(LocalDateTime date, Pageable pageRequest);
     Page<Post> findAllByAuthor(User author, Pageable pageRequest);
     List<Post> findAllByTitleIgnoreCaseContaining( String searchTitle);
     List<Post> findAllByContentIgnoreCaseContaining( String searchContent);

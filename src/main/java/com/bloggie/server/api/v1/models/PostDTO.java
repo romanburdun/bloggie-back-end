@@ -22,5 +22,6 @@ public class PostDTO {
     private String slug;
     private UserDTO author;
     private MetaDTO seo;
+    private boolean draft;
     private Set<MediaDTO> media;
 }

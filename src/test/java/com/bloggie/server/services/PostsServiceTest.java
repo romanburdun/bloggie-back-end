@@ -120,7 +120,7 @@ class PostsServiceTest {
     @Test
     void deletePostBySlug() {
 
-        Mockito.when(postsRepository.findBySlug(any(String.class))).thenReturn(Optional.of(PostsFixtures.getSinglePost()));
+        Mockito.when(postsRepository.findBySlugAndDraftIsFalse(any(String.class))).thenReturn(Optional.of(PostsFixtures.getSinglePost()));
         PostDTO deletedPost = postsService.deletePostBySlug("test-post");
         assertNotNull(deletedPost);
         assertEquals("test-post", deletedPost.getSlug());
@@ -135,7 +135,7 @@ class PostsServiceTest {
         update.setSlug("test-post-updated");
 
         Mockito.when(authService.getRequestUser()).thenReturn(Optional.of(UsersFixtures.getWriterUser()));
-        Mockito.when(postsRepository.findBySlug(any(String.class))).thenReturn(Optional.of(PostsFixtures.getSinglePost()));
+        Mockito.when(postsRepository.findBySlugAndDraftIsFalse(any(String.class))).thenReturn(Optional.of(PostsFixtures.getSinglePost()));
         Mockito.when(postsRepository.save(any(Post.class))).thenReturn(PostsFixtures.getUpdatedPost());
 
         PostDTO updatedPost = postsService.updatePostBySlug("test-post", update);
@@ -150,7 +150,7 @@ class PostsServiceTest {
     @Test
     void getPostBySlug() {
 
-        Mockito.when(postsRepository.findBySlug(any(String.class))).thenReturn(Optional.of(PostsFixtures.getSinglePost()));
+        Mockito.when(postsRepository.findBySlugAndDraftIsFalse(any(String.class))).thenReturn(Optional.of(PostsFixtures.getSinglePost()));
         PostReaderDTO fetchedPost = postsService.getPostBySlug("test-post");
 
         assertNotNull(fetchedPost);
@@ -162,7 +162,7 @@ class PostsServiceTest {
 
         Page<Post> pagedPosts = new PageImpl(PostsFixtures.getPosts());
 
-        Mockito.when(postsRepository.findAllByDatePublishedBefore(any(LocalDateTime.class),any(Pageable.class))).thenReturn(pagedPosts);
+        Mockito.when(postsRepository.findAllByDatePublishedBeforeAndDraftIsFalse(any(LocalDateTime.class),any(Pageable.class))).thenReturn(pagedPosts);
 
 
         PostsExcerptsPaged fetchedExcerpts = postsService.getPostsExcerpts(0, 3);

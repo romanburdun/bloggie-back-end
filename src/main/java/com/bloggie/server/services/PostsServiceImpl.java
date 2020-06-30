@@ -141,7 +141,7 @@ public class PostsServiceImpl implements PostsService {
     @Override
     public PostReaderDTO getPostBySlug(String slug) {
 
-        Post post = postsRepository.findBySlug(slug)
+        Post post = postsRepository.findBySlugAndDraftIsFalse(slug)
                 .orElseThrow(() -> new ApiRequestException("Post not found", HttpStatus.NOT_FOUND));
         return postMapper.postToPostReaderDTO(post);
     }
@@ -149,7 +149,7 @@ public class PostsServiceImpl implements PostsService {
     @Override
     public PostDTO deletePostBySlug(String slug) {
 
-        Post post =  postsRepository.findBySlug(slug)
+        Post post =  postsRepository.findBySlugAndDraftIsFalse(slug)
                 .orElseThrow(()-> new ApiRequestException("Post not found", HttpStatus.NOT_FOUND));
 
         postsRepository.deleteById(post.getId());
@@ -163,7 +163,7 @@ public class PostsServiceImpl implements PostsService {
         User user = authService.getRequestUser()
                 .orElseThrow(()-> new ApiRequestException("Not authenticated", HttpStatus.UNAUTHORIZED));
 
-        Post foundPost = postsRepository.findBySlug(slug)
+        Post foundPost = postsRepository.findBySlugAndDraftIsFalse(slug)
                 .orElseThrow(()-> new ApiRequestException("Post not found", HttpStatus.NOT_FOUND));
 
         if(foundPost.getAuthor().getId() != user.getId()) {
@@ -247,7 +247,7 @@ public class PostsServiceImpl implements PostsService {
         LocalDateTime today = LocalDateTime.now();
 
 
-        List<PostExcerptDTO> postsList = postsRepository.findAllByDatePublishedBefore(today, pageRequest)
+        List<PostExcerptDTO> postsList = postsRepository.findAllByDatePublishedBeforeAndDraftIsFalse(today, pageRequest)
                 .stream()
                 .map(post -> postMapper.postToPostExcerptDto(post))
                 .collect(Collectors.toList());

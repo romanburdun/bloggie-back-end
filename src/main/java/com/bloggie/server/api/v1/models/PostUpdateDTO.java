@@ -19,5 +19,6 @@ public class PostUpdateDTO {
     private String slug;
     private int readTime;
     private MetaDTO seo;
+    private boolean draft;
     private Set<MediaDTO> media;
 }
