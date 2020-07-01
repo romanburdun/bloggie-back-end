@@ -65,6 +65,10 @@ public class Post extends BaseEntity {
             return false;
         }
 
+        if(this.isDraft() != anotherPost.isDraft()) {
+            return false;
+        }
+
         return true;
     }
 }

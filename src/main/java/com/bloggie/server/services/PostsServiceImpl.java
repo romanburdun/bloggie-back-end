@@ -163,7 +163,7 @@ public class PostsServiceImpl implements PostsService {
         User user = authService.getRequestUser()
                 .orElseThrow(()-> new ApiRequestException("Not authenticated", HttpStatus.UNAUTHORIZED));
 
-        Post foundPost = postsRepository.findBySlugAndDraftIsFalse(slug)
+        Post foundPost = postsRepository.findBySlug(slug)
                 .orElseThrow(()-> new ApiRequestException("Post not found", HttpStatus.NOT_FOUND));
 
         if(foundPost.getAuthor().getId() != user.getId()) {
@@ -216,6 +216,8 @@ public class PostsServiceImpl implements PostsService {
 
                 foundPost.setSeo(metasRepository.save(seo));
             }
+
+            foundPost.setDraft(update.isDraft());
 
         }
 
