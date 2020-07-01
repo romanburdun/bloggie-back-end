@@ -1,6 +1,7 @@
 package com.bloggie.server.controllers;
 
 import com.bloggie.server.api.v1.models.PageDTO;
+import com.bloggie.server.api.v1.models.PageReaderDTO;
 import com.bloggie.server.api.v1.models.PageUpdateDTO;
 import com.bloggie.server.services.PageService;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,7 @@ public class PageController {
     }
 
     @GetMapping("/{slug}")
-    private PageDTO getPageBySlug(@PathVariable String slug) {
+    private PageReaderDTO getPageBySlug(@PathVariable String slug) {
         return pageService.getPageBySlug(slug);
     }
 

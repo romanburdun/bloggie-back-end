@@ -135,7 +135,7 @@ class PostsServiceTest {
         update.setSlug("test-post-updated");
 
         Mockito.when(authService.getRequestUser()).thenReturn(Optional.of(UsersFixtures.getWriterUser()));
-        Mockito.when(postsRepository.findBySlugAndDraftIsFalse(any(String.class))).thenReturn(Optional.of(PostsFixtures.getSinglePost()));
+        Mockito.when(postsRepository.findBySlug(any(String.class))).thenReturn(Optional.of(PostsFixtures.getSinglePost()));
         Mockito.when(postsRepository.save(any(Post.class))).thenReturn(PostsFixtures.getUpdatedPost());
 
         PostDTO updatedPost = postsService.updatePostBySlug("test-post", update);

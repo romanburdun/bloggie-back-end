@@ -76,7 +76,7 @@ class PageControllerTest extends AsJsonController {
     @Test
     public void getPagesBySlug() throws Exception {
 
-        Mockito.when(pageService.getPageBySlug(any(String.class))).thenReturn(PagesFixtures.getSinglePageDTO());
+        Mockito.when(pageService.getPageBySlug(any(String.class))).thenReturn(PagesFixtures.getPageReaderDTO());
 
         mockMvc.perform(get("/api/v1/pages/test-page"))
                 .andExpect(status().isOk())

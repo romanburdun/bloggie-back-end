@@ -1,6 +1,7 @@
 package com.bloggie.server.fixtures;
 
 import com.bloggie.server.api.v1.models.PageDTO;
+import com.bloggie.server.api.v1.models.PageReaderDTO;
 import com.bloggie.server.domain.Page;
 
 import java.util.Arrays;
@@ -23,6 +24,14 @@ public abstract class PagesFixtures {
         pageDTO.setSlug("test-pageDTO");
 
         return pageDTO;
+    }
+
+    public static PageReaderDTO getPageReaderDTO() {
+        PageReaderDTO pageReaderDTO = new PageReaderDTO();
+        pageReaderDTO.setTitle("Test pageDTO");
+        pageReaderDTO.setContent("<div>Test pageDTO content</div>");
+        pageReaderDTO.setSlug("test-pageDTO");
+        return pageReaderDTO;
     }
 
     public static Page getUpdatedPage() {

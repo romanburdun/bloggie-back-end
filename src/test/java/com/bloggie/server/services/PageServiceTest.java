@@ -5,6 +5,7 @@ import com.bloggie.server.api.v1.mappers.MediaMapper;
 import com.bloggie.server.api.v1.mappers.MetaMapper;
 import com.bloggie.server.api.v1.mappers.PageMapper;
 import com.bloggie.server.api.v1.models.PageDTO;
+import com.bloggie.server.api.v1.models.PageReaderDTO;
 import com.bloggie.server.api.v1.models.PageUpdateDTO;
 import com.bloggie.server.domain.Meta;
 import com.bloggie.server.domain.Page;
@@ -88,7 +89,7 @@ class PageServiceTest {
         Mockito.when(pagesRepository.findBySlug(any(String.class)))
                 .thenReturn(Optional.of(PagesFixtures.getSinglePage()));
 
-        PageDTO foundPage = pageService.getPageBySlug("test-page");
+        PageReaderDTO foundPage = pageService.getPageBySlug("test-page");
 
         assertNotNull(foundPage);
         assertEquals("test-page", foundPage.getSlug());

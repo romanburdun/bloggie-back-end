@@ -4,10 +4,7 @@ import com.bloggie.server.api.v1.mappers.CustomFieldMapper;
 import com.bloggie.server.api.v1.mappers.MediaMapper;
 import com.bloggie.server.api.v1.mappers.MetaMapper;
 import com.bloggie.server.api.v1.mappers.PageMapper;
-import com.bloggie.server.api.v1.models.MediaDTO;
-import com.bloggie.server.api.v1.models.MetaDTO;
-import com.bloggie.server.api.v1.models.PageDTO;
-import com.bloggie.server.api.v1.models.PageUpdateDTO;
+import com.bloggie.server.api.v1.models.*;
 import com.bloggie.server.domain.CustomField;
 import com.bloggie.server.domain.Media;
 import com.bloggie.server.domain.Meta;
@@ -92,12 +89,12 @@ public class PageServiceImpl implements PageService {
     }
 
     @Override
-    public PageDTO getPageBySlug(String slug) {
+    public PageReaderDTO getPageBySlug(String slug) {
 
         Page foundPage = pagesRepository.findBySlug(slug)
                 .orElseThrow(()-> new ApiRequestException("Page not found", HttpStatus.NOT_FOUND));
 
-        return pageMapper.pageToPageDto(foundPage);
+        return pageMapper.pageToPageReaderDto(foundPage);
     }
 
     @Override
