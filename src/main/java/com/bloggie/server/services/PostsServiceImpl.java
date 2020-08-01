@@ -22,10 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -149,7 +146,7 @@ public class PostsServiceImpl implements PostsService {
     @Override
     public PostDTO deletePostBySlug(String slug) {
 
-        Post post =  postsRepository.findBySlugAndDraftIsFalse(slug)
+        Post post =  postsRepository.findBySlug(slug)
                 .orElseThrow(()-> new ApiRequestException("Post not found", HttpStatus.NOT_FOUND));
 
         postsRepository.deleteById(post.getId());

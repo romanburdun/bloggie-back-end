@@ -120,7 +120,7 @@ class PostsServiceTest {
     @Test
     void deletePostBySlug() {
 
-        Mockito.when(postsRepository.findBySlugAndDraftIsFalse(any(String.class))).thenReturn(Optional.of(PostsFixtures.getSinglePost()));
+        Mockito.when(postsRepository.findBySlug(any(String.class))).thenReturn(Optional.of(PostsFixtures.getSinglePost()));
         PostDTO deletedPost = postsService.deletePostBySlug("test-post");
         assertNotNull(deletedPost);
         assertEquals("test-post", deletedPost.getSlug());
