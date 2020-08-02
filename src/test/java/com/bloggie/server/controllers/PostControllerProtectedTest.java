@@ -32,6 +32,7 @@ import javax.servlet.http.Cookie;
 import java.util.Date;
 
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -64,7 +65,7 @@ class PostControllerProtectedTest extends AsJsonController {
 
     @Test
     @WithUserDetails("jadmin@test.com")
-    void createPostTest() throws Exception {
+    void createPostAuthenticatedTest() throws Exception {
 
         PostDTO post = new PostDTO();
         post.setTitle("Test post title");
@@ -90,6 +91,57 @@ class PostControllerProtectedTest extends AsJsonController {
 
     @Test
     @WithUserDetails("jadmin@test.com")
+    void createPostBadRequestTest() throws Exception {
+
+        PostDTO post = new PostDTO();
+        post.setTitle("Test post title");
+        post.setCover("testPost.webp");
+        post.setReadTime(10);
+        post.setSlug("test-post");
+
+        Mockito.when(postsService.createPost(any(PostDTO.class))).thenThrow(new ApiRequestException("Bad request", HttpStatus.BAD_REQUEST));
+
+        mockMvc.perform(post("/api/v1/posts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(post)))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ApiRequestException))
+                .andExpect(result -> assertEquals("Bad request", result.getResolvedException().getMessage()))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+
+    }
+
+
+    @Test
+    void createPostNotAuthenticatedTest() throws Exception {
+
+        PostDTO post = new PostDTO();
+        post.setTitle("Test post title");
+        post.setContent("Test post content");
+        post.setCover("testPost.webp");
+        post.setReadTime(10);
+        post.setSlug("test-post");
+
+        Mockito.when(postsService.createPost(any(PostDTO.class))).thenReturn(PostsFixtures.getSinglePostDTO());
+
+        String data = asJsonString(post);
+        System.out.println(data);
+        mockMvc.perform(post("/api/v1/posts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(data))
+                .andExpect(status().isUnauthorized())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+
+    }
+
+    @Test
+    @WithUserDetails("jadmin@test.com")
     void getPosts() throws Exception {
 
         PostsPaged response = new PostsPaged(1,PostsFixtures.getPostsDTOs());
@@ -102,7 +154,7 @@ class PostControllerProtectedTest extends AsJsonController {
 
     @Test
     @WithUserDetails("jadmin@test.com")
-    void deletePostAuthorized() throws Exception {
+    void deletePostAuthenticated() throws Exception {
 
 
 
@@ -123,7 +175,7 @@ class PostControllerProtectedTest extends AsJsonController {
     }
 
     @Test
-    void deletePostUnauthorized() throws Exception {
+    void deletePostNotAuthenticated() throws Exception {
         Mockito.when(postsService.deletePostBySlug(any(String.class))).thenReturn(PostsFixtures.getSinglePostDTO());
 
         mockMvc.perform(delete("/api/v1/posts/test-post"))
@@ -134,10 +186,12 @@ class PostControllerProtectedTest extends AsJsonController {
     @Test
     @WithUserDetails("jwriter@test.com")
     void deletePostForbidden() throws Exception {
-        Mockito.when(postsService.deletePostBySlug(any(String.class))).thenThrow(new ApiRequestException("Not allowed", HttpStatus.FORBIDDEN));
+        Mockito.when(postsService.deletePostBySlug(any(String.class))).thenThrow(new ApiRequestException("Not authorized", HttpStatus.FORBIDDEN));
 
         mockMvc.perform(delete("/api/v1/posts/no-post"))
                 .andExpect(status().isForbidden())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ApiRequestException))
+                .andExpect(result -> assertEquals("Not authorized",result.getResolvedException().getMessage()))
                 .andReturn().getResponse().getContentAsString();
     }
 
@@ -145,18 +199,19 @@ class PostControllerProtectedTest extends AsJsonController {
     @Test
     @WithUserDetails("jwriter@test.com")
     void deletePostNotFound() throws Exception {
-     Mockito.when(postsService.deletePostBySlug(any(String.class))).thenThrow(new ApiRequestException("Not found", HttpStatus.NOT_FOUND));
+     Mockito.when(postsService.deletePostBySlug(any(String.class))).thenThrow(new ApiRequestException("Post not found", HttpStatus.NOT_FOUND));
 
         mockMvc.perform(delete("/api/v1/posts/no-post"))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof ApiRequestException))
+                .andExpect(result-> assertEquals("Post not found",result.getResolvedException().getMessage()))
                 .andReturn().getResponse().getContentAsString();
     }
 
 
     @Test
     @WithUserDetails("jadmin@test.com")
-    void updatePost() throws Exception {
+    void updatePostAuthenticated() throws Exception {
         PostUpdateDTO update = new PostUpdateDTO();
         update.setTitle("Test post title updated");
         update.setContent("Test post content updated");
@@ -164,7 +219,7 @@ class PostControllerProtectedTest extends AsJsonController {
         update.setSlug("updated-test-post");
         update.setReadTime(5);
 
-        Mockito.when(postsService.updatePostBySlug("test-post",update)).thenReturn(PostsFixtures.getUpdatedPostDTO());
+        Mockito.when(postsService.updatePostBySlug(any(String.class),any(PostUpdateDTO.class))).thenReturn(PostsFixtures.getUpdatedPostDTO());
 
          mockMvc.perform(put("/api/v1/posts/test-post").contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(update)))
@@ -172,5 +227,45 @@ class PostControllerProtectedTest extends AsJsonController {
                 .andReturn().getResponse().getContentAsString();
 
     }
+
+    @Test
+    @WithUserDetails("jadmin@test.com")
+    void updatePostUnauthorized() throws Exception {
+        PostUpdateDTO update = new PostUpdateDTO();
+        update.setTitle("Test post title updated");
+        update.setContent("Test post content updated");
+        update.setCover("updatedTestCover.webp");
+        update.setSlug("updated-test-post");
+        update.setReadTime(5);
+
+        Mockito.when(postsService.updatePostBySlug(any(String.class),any(PostUpdateDTO.class))).thenThrow(new ApiRequestException("Unauthorized request", HttpStatus.FORBIDDEN));
+
+        mockMvc.perform(put("/api/v1/posts/test-post").contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(update)))
+                .andExpect(status().isForbidden())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ApiRequestException))
+                .andExpect(result -> assertEquals("Unauthorized request",result.getResolvedException().getMessage()))
+                .andReturn().getResponse().getContentAsString();
+
+    }
+
+    @Test
+    void updatePostNotAuthenticated() throws Exception {
+        PostUpdateDTO update = new PostUpdateDTO();
+        update.setTitle("Test post title updated");
+        update.setContent("Test post content updated");
+        update.setCover("updatedTestCover.webp");
+        update.setSlug("updated-test-post");
+        update.setReadTime(5);
+
+        Mockito.when(postsService.updatePostBySlug(any(String.class),any(PostUpdateDTO.class))).thenThrow(new ApiRequestException("Unauthorized request", HttpStatus.FORBIDDEN));
+
+        mockMvc.perform(put("/api/v1/posts/test-post").contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(update)))
+                .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getContentAsString();
+
+    }
+
 
 }

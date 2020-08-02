@@ -34,7 +34,6 @@ public class PostsServiceImpl implements PostsService {
     private final AuthService authService;
     private final MetaMapper metaMapper;
     private final MetasRepository metasRepository;
-    private final MediaMapper mediaMapper;
     private final MediaRepository mediaRepository;
 
     @Override
@@ -146,10 +145,18 @@ public class PostsServiceImpl implements PostsService {
     @Override
     public PostDTO deletePostBySlug(String slug) {
 
+        User user = authService.getRequestUser()
+                .orElseThrow(()-> new ApiRequestException("Not authenticated", HttpStatus.UNAUTHORIZED));
+
+
         Post post =  postsRepository.findBySlug(slug)
                 .orElseThrow(()-> new ApiRequestException("Post not found", HttpStatus.NOT_FOUND));
 
+        if(post.getAuthor().getId() != user.getId()) {
+           throw new ApiRequestException("Not authorized", HttpStatus.FORBIDDEN);
+        }
         postsRepository.deleteById(post.getId());
+
 
         return postMapper.postToPostDto(post);
     }
