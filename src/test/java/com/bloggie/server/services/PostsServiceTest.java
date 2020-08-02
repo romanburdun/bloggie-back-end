@@ -58,7 +58,6 @@ class PostsServiceTest {
                 authService,
                 metaMapper,
                 metasRepository,
-                mediaMapper,
                 mediaRepository);
     }
 
