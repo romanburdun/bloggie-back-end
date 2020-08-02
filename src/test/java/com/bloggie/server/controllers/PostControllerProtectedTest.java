@@ -22,6 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -41,7 +42,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = AuthTestConfig.class,webEnvironment = SpringBootTest.WebEnvironment.MOCK )
 @ExtendWith(MockitoExtension.class)
-@AutoConfigureMockMvc(addFilters=false)
 class PostControllerProtectedTest extends AsJsonController {
 
     @Autowired
@@ -116,6 +116,7 @@ class PostControllerProtectedTest extends AsJsonController {
 
 
     @Test
+    @WithAnonymousUser
     void createPostNotAuthenticatedTest() throws Exception {
 
         PostDTO post = new PostDTO();
@@ -175,6 +176,7 @@ class PostControllerProtectedTest extends AsJsonController {
     }
 
     @Test
+    @WithAnonymousUser
     void deletePostNotAuthenticated() throws Exception {
         Mockito.when(postsService.deletePostBySlug(any(String.class))).thenReturn(PostsFixtures.getSinglePostDTO());
 
@@ -249,23 +251,6 @@ class PostControllerProtectedTest extends AsJsonController {
 
     }
 
-    @Test
-    void updatePostNotAuthenticated() throws Exception {
-        PostUpdateDTO update = new PostUpdateDTO();
-        update.setTitle("Test post title updated");
-        update.setContent("Test post content updated");
-        update.setCover("updatedTestCover.webp");
-        update.setSlug("updated-test-post");
-        update.setReadTime(5);
-
-        Mockito.when(postsService.updatePostBySlug(any(String.class),any(PostUpdateDTO.class))).thenThrow(new ApiRequestException("Unauthorized request", HttpStatus.FORBIDDEN));
-
-        mockMvc.perform(put("/api/v1/posts/test-post").contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(update)))
-                .andExpect(status().isUnauthorized())
-                .andReturn().getResponse().getContentAsString();
-
-    }
 
 
 }
