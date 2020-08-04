@@ -28,8 +28,6 @@ public class AuthController {
 
     private AuthService authService;
     private EmailService emailService;
-
-    @Autowired
     private Environment environment;
 
     @PostMapping("/register")
