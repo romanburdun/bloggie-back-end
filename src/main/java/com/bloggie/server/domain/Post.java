@@ -16,7 +16,9 @@ public class Post extends BaseEntity {
     private LocalDateTime datePublished;
     private String title;
     private String cover;
+    @Column(columnDefinition = "TEXT")
     private String content;
+    @Column(columnDefinition = "TEXT")
     private String excerpt;
     private String slug;
     private boolean draft;

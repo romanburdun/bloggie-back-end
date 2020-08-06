@@ -13,6 +13,7 @@ import java.util.Set;
 public class Page extends BaseEntity {
 
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String content;
     private String slug;
     @OneToOne
